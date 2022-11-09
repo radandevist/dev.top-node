@@ -5,6 +5,11 @@
   "repository": "https://github.com/radandevist/dev.ko-node.git",
   "author": "Andrianarisoa Daniel <radandevist@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "build": "yarn tsc",
+    "clean": "rm -rf dist",
+    "prebuild": "yarn clean"
+  },
   "devDependencies": {
     "typescript": "^4.8.4"
   }
