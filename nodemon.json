@@ -1,0 +1,7 @@
+{
+  "watch": ["src"],
+  "ext": "ts",
+  "ignore": ["src/**/*.{spec,test}.ts"],
+  "exec": "yarn build && node --enable-source-maps",
+  "verbose": true
+}
