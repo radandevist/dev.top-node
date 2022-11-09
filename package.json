@@ -1,0 +1,11 @@
+{
+  "name": "dev.ko-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/radandevist/dev.ko-node.git",
+  "author": "Andrianarisoa Daniel <radandevist@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}
