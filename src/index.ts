@@ -1,4 +1,9 @@
+import "reflect-metadata"
+import "../dotenv"
 import express from "express"
+import { initializeDataSource } from "./dataSource"
+
+initializeDataSource();
 
 const app = express()
 const port = 3300
