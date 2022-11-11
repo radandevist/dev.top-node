@@ -10,7 +10,8 @@
     "clean": "rm -rf dist",
     "prebuild": "yarn clean",
     "start": "node $npm_package_main",
-    "dev": "nodemon $npm_package_main"
+    "dev": "nodemon $npm_package_main",
+    "typecheck": "yarn tsc"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",
