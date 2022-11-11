@@ -1,13 +1,14 @@
+import express, { json, urlencoded } from "express";
 
-import express, { json, urlencoded } from "express"
-import { apiBasePath } from "../config/app"
-import { apiRouter } from "./routes"
+import { apiBasePath } from "../config/app";
 
-const app = express()
+import { apiRouter } from "./routes";
 
-app.use(json())
-app.use(urlencoded({ extended: true }))
+const app = express();
 
-app.use(apiBasePath, apiRouter)
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+app.use(apiBasePath, apiRouter);
 
 export { app };

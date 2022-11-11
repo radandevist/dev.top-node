@@ -1,4 +1,5 @@
-import { createServer } from "http"
-import { app } from "./app"
+import { createServer } from "http";
 
-export const server = createServer(app)
+import { app } from "./app";
+
+export const server = createServer(app);

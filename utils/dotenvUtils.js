@@ -4,7 +4,8 @@ import { existsSync } from "fs";
 /**
  * Given an environment variable, gets the path to the corresponding .env file.
  *
- * @param {"development" | "production" | "test"} env - The current environment variable.
+ * @param {"development" | "production" | "test"} env
+ *  - The current environment variable.
  * @returns {string} The absolute path to the environment variable file.
  */
 export function getEnvFile(env) {
@@ -28,4 +29,4 @@ export function getEnvFile(env) {
   }
   if (!envPath) throw new Error("no valid .env file found");
   return envPath;
-};
+}

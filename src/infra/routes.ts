@@ -1,22 +1,30 @@
-import { currentDir } from '../utils/fsUtils'
-import { Router } from "express"
-import { resolve } from "path"
-import { RoutesExportsNames, routesExportsNames } from "../config/routes"
-import { resources } from "../constants/resources"
+import { resolve } from "path";
 
-export const apiRouter = Router()
+import { Router } from "express";
+
+import { currentDir } from "../utils/fsUtils";
+import { RoutesExportsNames, routesExportsNames } from "../config/routes";
+import { resources } from "../constants/resources";
+
+export const apiRouter = Router();
 
 resources.map(async (resource) => {
-  const routesFileRelativePath = "../res/" + resource + "/" + resource + ".routes"
+  const routesFileRelativePath = `../res/${resource}/${resource}.routes`;
 
-  const routesImport: Record<string, any> = await import(routesFileRelativePath)
+  const routesImport: Record<string, any> = await import(routesFileRelativePath);
 
   routesExportsNames.forEach((exportsName) => {
     if (!(exportsName in routesImport)) {
-      const routesFileAbsolutePath = resolve(currentDir(), routesFileRelativePath)
-      throw Error(routesFileAbsolutePath + " must export a " + exportsName + " property")
-    }
-  })
+      const routesFileAbsolutePath = resolve(currentDir(), routesFileRelativePath);
 
-  apiRouter.use(routesImport[RoutesExportsNames.PATH], routesImport[RoutesExportsNames.ROUTER])
-})
+      throw Error(
+        `${routesFileAbsolutePath} must export a ${exportsName} property`,
+      );
+    }
+  });
+
+  apiRouter.use(
+    routesImport[RoutesExportsNames.PATH],
+    routesImport[RoutesExportsNames.ROUTER],
+  );
+});

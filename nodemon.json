@@ -2,6 +2,6 @@
   "watch": ["src"],
   "ext": "ts",
   "ignore": ["src/**/*.{spec,test}.ts"],
-  "exec": "yarn build && node --enable-source-maps --es-module-specifier-resolution=node",
+  "exec": "yarn build && yarn node:start",
   "verbose": true
 }

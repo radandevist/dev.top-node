@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-export const path = "/posts"
+import { getManyPosts } from "./posts.controller";
 
-export const router = Router()
+export const path = "/posts";
 
-router.get("/", function (req, res) {
-  res.send("fuck off")
-})
+export const router = Router();
+
+router.get("/", getManyPosts);

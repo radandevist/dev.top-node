@@ -1,5 +1,5 @@
 export enum RoutesExportsNames {
-  PATH = 'path',
-  ROUTER = 'router'
+  PATH = "path",
+  ROUTER = "router"
 }
-export const routesExportsNames = Object.values(RoutesExportsNames)
+export const routesExportsNames = Object.values(RoutesExportsNames);
