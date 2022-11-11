@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "repository": "https://github.com/radandevist/dev.ko-node.git",
-  "author": "Andrianarisoa Daniel <radandevist@gmail.com>",
+  "author": {
+    "name": "Andrianarisoa Daniel",
+    "email": "radandevist@gmail.com",
+    "url": "https://radanfolio.vercel.app"
+  },
   "license": "MIT",
   "type": "module",
   "scripts": {

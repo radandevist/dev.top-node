@@ -1,21 +1,15 @@
-import { currentDir, getDirectories } from './../utils/fsUtils'
+import { currentDir } from '../utils/fsUtils'
 import { Router } from "express"
 import { resolve } from "path"
-
-enum RoutesExportsNames {
-  PATH = 'path',
-  ROUTER = 'router'
-}
-const routesExportsNames = Object.values(RoutesExportsNames)
+import { RoutesExportsNames, routesExportsNames } from "../config/routes"
+import { resources } from "../constants/resources"
 
 export const apiRouter = Router()
 
-const resources = getDirectories("../res")
-
 resources.map(async (resource) => {
-  const routesFileRelativePath = "../res/" + resource + "/" + resource + ".routes";
+  const routesFileRelativePath = "../res/" + resource + "/" + resource + ".routes"
 
-  const routesImport: Record<string, any> = await import(routesFileRelativePath)  
+  const routesImport: Record<string, any> = await import(routesFileRelativePath)
 
   routesExportsNames.forEach((exportsName) => {
     if (!(exportsName in routesImport)) {

@@ -10,7 +10,10 @@
       "legacyDecorator": true,
       "decoratorMetadata": true
     },
-    "target": "es2022"
+    "target": "es2022",
+    "experimental": {
+      "keepImportAssertions": true
+    }
   },
   "module": {
     "type": "es6"

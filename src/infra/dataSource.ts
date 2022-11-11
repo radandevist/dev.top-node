@@ -1,24 +1,31 @@
-import { User } from '../res/users/users.entity'
+import { resources } from '../constants/resources';
+import { isProd } from './../config/environment';
+import { host, port, username, password, database } from "../config/db"
 import { DataSource } from "typeorm"
 
-const { 
-  DB_USER,
-  DB_PASSWORD,
-  DB_NAME,
-  NODE_ENV,
-} = process.env;
+const entities = await Promise.all(resources.map(async (resource) => {
+  const entityExportName = resource.split("")
+    .map((value, index, array) => {
+      if (index === 0) return value.toUpperCase()
+      if (index === array.length - 1 && value === "s") return ""
+      return value;
+    })
+    .join("")
+
+  const entityFileRelativePath = "../res/" + resource + "/" + resource + ".entity"
+
+  const entityImport: Record<string, any> = await import(entityFileRelativePath)
+
+  return entityImport[entityExportName]
+}));
 
 export const dataSource = new DataSource({
     type: "mysql",
-    host: "localhost",
-    port: 3306,
-    username: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME,
-    entities: [User],
-    synchronize: NODE_ENV !== "production",
+    host,
+    port,
+    username,
+    password,
+    database,
+    entities,
+    synchronize: !isProd,
 })
-
-export function initializeDataSource() {
-  dataSource.initialize();
-}
