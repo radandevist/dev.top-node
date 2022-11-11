@@ -2,7 +2,9 @@
   "jsc": {
     "parser": {
       "syntax": "typescript",
-      "decorators": true
+      "decorators": true,
+      "dynamicImport": true,
+      "topLevelAwait": true
     },
     "transform": {
       "legacyDecorator": true,
@@ -11,7 +13,7 @@
     "target": "es2022"
   },
   "module": {
-    "type": "commonjs"
+    "type": "es6"
   },
   "sourceMaps": true
 }
