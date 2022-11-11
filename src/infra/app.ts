@@ -1,10 +1,12 @@
 
-import express from "express"
+import express, { json, urlencoded } from "express"
+import { apiRouter } from "./routes"
 
 const app = express()
 
-app.use("/api", function (req, res) {
-  res.send({ message: "welcome to our api" })
-})
+app.use(json())
+app.use(urlencoded({ extended: true }))
+
+app.use('/api', apiRouter)
 
 export { app };
