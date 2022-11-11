@@ -1,17 +1,12 @@
 import "reflect-metadata"
 import "../dotenv"
-import express from "express"
-import { initializeDataSource } from "./dataSource"
+import { server } from "./infra/server"
+import { initializeDataSource } from "./infra/dataSource"
 
 initializeDataSource()
 
-const app = express()
 const port = 3300
 
-app.use("/api", function (req, res) {
-  res.send({ message: "welcome to our api" })
-})
-
-app.listen(port, function () {
+server.listen(port, function () {
   console.log("App is running on port " + port)
 })

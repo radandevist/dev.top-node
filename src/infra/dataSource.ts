@@ -1,4 +1,4 @@
-import { User } from './user.entity'
+import { User } from '../res/users/users.entity'
 import { DataSource } from "typeorm"
 
 const { 
