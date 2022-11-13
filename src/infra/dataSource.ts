@@ -1,26 +1,42 @@
-import { DataSource } from "typeorm";
+import { join } from "path";
+import { existsSync } from "fs";
 
-import { resources } from "../constants/resources";
+import { DataSource } from "typeorm";
+import { z } from "zod";
+
+import { resources, resourcesDir } from "../constants/resources";
 import { isProd } from "../config/environment";
 import {
   host, port, username, password, database,
 } from "../config/db";
+import { capitalize, toSingular } from "../utils/stringUtils";
 
-const entities = await Promise.all(resources.map(async (resource) => {
-  const entityExportName = resource.split("")
-    .map((value, index, array) => {
-      if (index === 0) return value.toUpperCase();
-      if (index === array.length - 1 && value === "s") return "";
-      return value;
-    })
-    .join("");
+const entityClassSchema = (
+  entityModuleName: string,
+  entityClassName: string,
+) => z.function(z.tuple([]).rest(z.any()), z.unknown(), {
+  required_error: `The module '${entityModuleName}' must export an entity class named '${entityClassName}'`,
+  invalid_type_error: `The exported member '${entityClassName}' in '${entityModuleName}' must be a class`,
+});
 
-  const entityFileRelativePath = `../res/${resource}/${resource}.entity`;
+const entityModuleSchema = (entityModuleName: string, entityClassName: string) => z.object({
+  [entityClassName]: entityClassSchema(entityModuleName, entityClassName),
+});
 
-  const entityImport: Record<string, any> = await import(entityFileRelativePath);
+const entities = (await Promise.all(
+  resources.map(async (resource) => {
+    const entityClassName = capitalize(toSingular(resource));
+    const entityModuleName = `${resource}.entity`;
+    const entityModulePath = join(resourcesDir, resource, entityModuleName);
 
-  return entityImport[entityExportName];
-}));
+    if (!existsSync(`${entityModulePath}.js`)) return null;
+
+    const entityModule = entityModuleSchema(entityModuleName, entityClassName)
+      .parse(await import(entityModulePath));
+
+    return entityModule[entityClassName];
+  }),
+)).filter<z.infer<ReturnType<typeof entityClassSchema>>>(Boolean as any);
 
 export const dataSource = new DataSource({
   type: "mysql",

@@ -4,5 +4,8 @@
     "swcrc",
     "typeorm"
   ],
-  "jest.autoRun": "off"
+  "jest.autoRun": "off",
+  "files.associations": {
+    ".swcrc.build": "json"
+  }
 }

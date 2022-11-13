@@ -1,30 +1,31 @@
-import { resolve } from "path";
+import { join } from "path";
+import { existsSync } from "fs";
 
 import { Router } from "express";
+import { z } from "zod";
 
-import { currentDir } from "../utils/fsUtils";
-import { RoutesExportsNames, routesExportsNames } from "../config/routes";
-import { resources } from "../constants/resources";
+import { resources, resourcesDir } from "../constants/resources";
 
 export const apiRouter = Router();
 
-resources.map(async (resource) => {
-  const routesFileRelativePath = `../res/${resource}/${resource}.routes`;
-
-  const routesImport: Record<string, any> = await import(routesFileRelativePath);
-
-  routesExportsNames.forEach((exportsName) => {
-    if (!(exportsName in routesImport)) {
-      const routesFileAbsolutePath = resolve(currentDir(), routesFileRelativePath);
-
-      throw Error(
-        `${routesFileAbsolutePath} must export a ${exportsName} property`,
-      );
-    }
-  });
-
-  apiRouter.use(
-    routesImport[RoutesExportsNames.PATH],
-    routesImport[RoutesExportsNames.ROUTER],
-  );
+const routesModuleSchema = (routesModuleName: string) => z.object({
+  path: z.string({
+    required_error: `The module '${routesModuleName}' must have a 'path' exported member`,
+    invalid_type_error: `The exported member 'path' in '${routesModuleName}' must be a string`,
+  }),
+  router: z.function(z.tuple([]).rest(z.any()), z.unknown(), {
+    required_error: `The module '${routesModuleName}' must have a 'router' exported member`,
+    invalid_type_error: `The exported member 'router' in '${routesModuleName}' must be an express router`,
+  }),
 });
+
+Promise.all(resources.map(async (resource) => {
+  const routesModuleName = `${resource}.routes`;
+  const routesModulePath = join(resourcesDir, resource, routesModuleName);
+
+  if (!existsSync(`${routesModulePath}.js`)) return;
+
+  const routesModule = routesModuleSchema(routesModuleName).parse(await import(routesModulePath));
+
+  apiRouter.use(routesModule.path, routesModule.router);
+}));

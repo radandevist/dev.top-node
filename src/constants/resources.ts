@@ -1,3 +1,7 @@
-import { getDirectories } from "../utils/fsUtils";
+import { join, resolve } from "path";
 
-export const resources = getDirectories("../res");
+import { currentDir, getDirectories } from "../utils/fsUtils";
+
+export const resourcesDir = resolve(currentDir(), join("..", "res"));
+
+export const resources = getDirectories(resourcesDir);
