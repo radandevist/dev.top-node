@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 
-import { getEnvFile } from "./utils/dotenvUtils";
+import { getEnvFile } from "./utils/dotenvUtils.js";
 
 // ! Don't import `src/config/*` or anything else in this file!
 // * Dotenv has to load the env files before anything else!

@@ -1,14 +1,19 @@
 import { join } from "path";
-import { existsSync } from "fs";
+import { existsSync, lstatSync } from "fs";
+
+const allowedEnvironments = Object.freeze(["development", "production", "test"]);
 
 /**
  * Given an environment variable, gets the path to the corresponding .env file.
  *
- * @param {"development" | "production" | "test"} env
- *  - The current environment variable.
+ * @param {"development" | "production" | "test"} env - The current environment variable.
  * @returns {string} The absolute path to the environment variable file.
  */
 export function getEnvFile(env) {
+  if (!allowedEnvironments.includes(env)) {
+    throw Error(`unknown environment: '${env}'`);
+  }
+
   /**
    * The earlier in this array, the higher priority is.
    */
@@ -19,14 +24,13 @@ export function getEnvFile(env) {
     ".env",
   ]);
 
-  let envPath;
+  const envPath = ["", ...envFilesByPriority].reduce((prev, current) => {
+    if (prev) return prev;
+    const fullPath = join(process.cwd(), current);
+    if (existsSync(fullPath) && lstatSync(fullPath).isFile()) return fullPath;
+    return "";
+  });
 
-  for (const envFile of envFilesByPriority) {
-    const fullPath = join(process.cwd(), envFile);
-    if (!existsSync(fullPath)) continue;
-    envPath = fullPath;
-    break;
-  }
-  if (!envPath) throw new Error("no valid .env file found");
+  if (!envPath) throw Error("no valid .env file found");
   return envPath;
 }

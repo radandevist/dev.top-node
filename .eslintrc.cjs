@@ -6,6 +6,7 @@ module.exports = {
   extends: [
     "airbnb-base",
     "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
   ],
   parser: "@typescript-eslint/parser",
   ignorePatterns: ["dist"],
@@ -44,4 +45,12 @@ module.exports = {
       },
     },
   },
+  overrides: [
+    {
+      files: ["*.js", "utils/**/*.js"],
+      rules: {
+        "import/extensions": ["error", "ignorePackages"],
+      },
+    },
+  ],
 };

@@ -15,7 +15,7 @@ const {
   CLIENT_URL,
 } = process.env;
 
-export const port = Number(PORT) || 3001;
+export const port = Number(PORT) || 3300;
 
 // export const docsPath = (DOCS_PATH && `/${DOCS_PATH}`) || "/api-docs";
 

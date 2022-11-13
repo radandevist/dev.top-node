@@ -1,6 +1,8 @@
 {
   "cSpell.words": [
-    "typeorm",
-    "Andrianarisoa"
-  ]
+    "Andrianarisoa",
+    "swcrc",
+    "typeorm"
+  ],
+  "jest.autoRun": "off"
 }
