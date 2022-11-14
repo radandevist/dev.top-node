@@ -1,13 +1,15 @@
 {
   "cSpell.words": [
     "Andrianarisoa",
+    "middlewares",
     "swcrc",
-    "typeorm"
+    "typeorm",
+    "whitespaces"
   ],
   "files.associations": {
     ".swcrc.build": "json"
   },
   "jest.autoRun": "off",
   "jest.jestCommandLine": "source ~/.zshrc && yarn test",
-  "jest.shell": "/usr/bin/zsh"
+  "jest.shell": "/usr/bin/zsh",
 }

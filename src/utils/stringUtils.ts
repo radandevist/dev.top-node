@@ -25,3 +25,19 @@ export function toSingular(str: string) {
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+/**
+ * Generates a random string given a length.
+ *
+ * @param length - The length of the string to generate.
+ * @returns The generated string.
+ */
+export function generateRandomString(length: number) {
+  let result = "";
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
