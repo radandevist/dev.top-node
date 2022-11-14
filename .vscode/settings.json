@@ -4,8 +4,10 @@
     "swcrc",
     "typeorm"
   ],
-  "jest.autoRun": "off",
   "files.associations": {
     ".swcrc.build": "json"
-  }
+  },
+  "jest.autoRun": "off",
+  "jest.jestCommandLine": "source ~/.zshrc && yarn test",
+  "jest.shell": "/usr/bin/zsh"
 }

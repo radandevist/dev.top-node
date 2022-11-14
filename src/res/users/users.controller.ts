@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 
+import { log } from "../../helpers/logger";
+
 export function createUser(req: Request, res: Response) {
-  console.log(req.body);
+  log.info("request body", req.body);
   res.send({ message: "user creation" });
 }
 

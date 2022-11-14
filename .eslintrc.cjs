@@ -1,23 +1,22 @@
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
-  env: {
-    node: true,
+  globals: {
+    __dirname: "off",
+    __filename: "off",
   },
   extends: [
-    "airbnb-base",
     "plugin:@typescript-eslint/recommended",
-    "plugin:jest/recommended",
+    // "plugin:jest/recommended",
+    "airbnb-base",
   ],
   parser: "@typescript-eslint/parser",
   ignorePatterns: ["dist"],
-  root: true,
   rules: {
     quotes: ["warn", "double"],
     "import/extensions": ["error", "ignorePackages", {
       js: "never",
       ts: "never",
     }],
-    "no-console": "off",
     "import/prefer-default-export": "off",
     "import/order": ["error", {
       "newlines-between": "always",
@@ -47,10 +46,14 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["*.js", "utils/**/*.js"],
+      files: ["./*.js", "./utils/**/*.js"],
       rules: {
         "import/extensions": ["error", "ignorePackages"],
       },
+    },
+    {
+      files: ["./**/*.{test,spec}.ts"],
+      extends: ["plugin:jest/recommended"],
     },
   ],
 };

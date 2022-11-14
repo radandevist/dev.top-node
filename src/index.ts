@@ -4,9 +4,11 @@ import "../dotenv";
 import { server } from "./infra/server";
 import { dataSource } from "./infra/dataSource";
 import { port } from "./config/app";
+import { log } from "./helpers/logger";
 
 await dataSource.initialize();
+log.info("DataSource initialized");
 
 server.listen(port, () => {
-  console.log(`App is running on port ${port}`);
+  log.info(`App is running on port ${port}`);
 });
