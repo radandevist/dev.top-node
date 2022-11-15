@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, TypeOf } from "zod";
 
 export const registerSchema = z.object({
   body: z.object({
@@ -15,4 +15,13 @@ export const registerSchema = z.object({
   }),
 });
 
-export type RegisterBody = typeof registerSchema._type.body;
+export type RegisterSchema = TypeOf<typeof registerSchema>;
+export type RegisterBody = RegisterSchema["body"];
+// * or
+// export type RegisterSchema = z.infer<typeof registerSchema>;
+// export type RegisterBody = RegisterSchema["body"];
+// * or
+// export type RegisterSchema = typeof registerSchema._type;
+// export type RegisterBody = RegisterSchema["body"];
+// * or
+// export type RegisterBody = typeof registerSchema._type.body;

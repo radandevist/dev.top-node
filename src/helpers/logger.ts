@@ -1,5 +1,6 @@
 import { createLogger, format, transports } from "winston";
 import { consoleFormat } from "winston-console-format";
+import { StreamOptions } from "morgan";
 
 /**
  * The logger instance to use throughout this entire project.
@@ -46,3 +47,9 @@ export const log = createLogger({
     }),
   ],
 });
+
+export const stream: StreamOptions = {
+  write(message: string) {
+    log.silly(message);
+  },
+};
