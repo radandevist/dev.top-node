@@ -41,3 +41,17 @@ export function generateRandomString(length: number) {
   }
   return result;
 }
+
+export function slugify(str: string) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// TODO: Search a regex to do this work
+export function hasNoLeadingAndTrailingSpace(str: string) {
+  return str.charAt(0) !== " " && str.charAt(str.length - 1) !== " ";
+}

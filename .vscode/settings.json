@@ -4,7 +4,8 @@
     "middlewares",
     "swcrc",
     "typeorm",
-    "whitespaces"
+    "whitespaces",
+    "longtext"
   ],
   "files.associations": {
     ".swcrc.build": "json"

@@ -5,13 +5,14 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
 import bcrypt from "bcryptjs";
 
 import { Role } from "../../config/roles";
 import { generateRandomString } from "../../utils/stringUtils";
-
-import { usersRepository } from "./users.repository";
+import { usersRepository } from "../../infra/dataSource";
+import { Post } from "../posts/posts.entity";
 
 @Entity()
 export class User {
@@ -43,6 +44,9 @@ export class User {
     default: Role.SIMPLE_USER,
   })
     role!: Role;
+
+  @OneToMany(() => Post, (post) => post.author)
+    posts!: Post[];
 
   @CreateDateColumn()
     createdAt!: Date;

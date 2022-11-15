@@ -8,8 +8,8 @@ import { isProd } from "../config/environment";
 import {
   host, port, username, password, database,
 } from "../config/db";
-import { User } from "../res/users/users.entity";
 import { Post } from "../res/posts/posts.entity";
+import { User } from "../res/users/users.entity";
 // import { capitalize, toSingular } from "../utils/stringUtils";
 // import { resources, resourcesDir } from "../constants/resources";
 
@@ -62,3 +62,16 @@ export const dataSource = new DataSource({
   entities,
   synchronize: !isProd,
 });
+
+// ================================================= //
+//                   REPOSITORIES                    //
+// ================================================= //
+
+/**
+ * Repositories must be defined just after the dataSource definition
+ * in the same file. Otherwise node will throw:
+ *  ReferenceError: Cannot access 'dataSource' before initialization
+ */
+
+export const usersRepository = dataSource.getRepository(User);
+export const postsRepository = dataSource.getRepository(Post);

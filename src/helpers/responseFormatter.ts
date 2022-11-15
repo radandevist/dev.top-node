@@ -12,7 +12,7 @@ export function fail(data: AnyObj) {
   };
 }
 
-export function error(message: string) {
+export function err(message: string) {
   return {
     status: "error",
     message,

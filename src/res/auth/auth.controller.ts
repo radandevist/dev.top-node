@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { log } from "../../helpers/logger";
+import { ok } from "../../helpers/responseFormatter";
 import { findUserByEmail, findUserByUserName } from "../users/users.services";
 
 import { registerUser } from "./auth.services";
@@ -27,7 +28,7 @@ export async function registerHandler(
 
     const user = await registerUser(req.body);
     log.info("registered user", user);
-    res.status(200).send(user);
+    res.status(200).send(ok({ user }));
   } catch (error) {
     log.error(error);
     res.status(500).send(error);

@@ -1,4 +1,4 @@
-import { usersRepository } from "./users.repository";
+import { usersRepository } from "../../infra/dataSource";
 
 export async function findUserByEmail(email: string) {
   return usersRepository.findOneBy({ email });
