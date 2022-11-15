@@ -2,16 +2,19 @@ import { z, TypeOf } from "zod";
 
 export const registerSchema = z.object({
   body: z.object({
-    email: z.string({ required_error: "Your email is required to register" })
+    email: z.string({ required_error: "Your email is required" })
       .email({ message: "The given email must be a valid one" }),
-    password: z.string({ required_error: "A password is required to register" })
+    password: z.string({ required_error: "A password is required" })
       .min(7, "Password must contain at least 7 characters"),
-    lastName: z.string({ required_error: "Your lastName is required to register" })
+    confirmPassword: z.string({ required_error: "Password confirmation is required" }),
+    lastName: z.string({ required_error: "Your lastName is required" })
       .trim()
       .min(3, "LastName must contain at least 3 characters")
       .regex(/^\S*$/, "The lastName shouldn't contain whitespaces"),
     firstName: z.string().trim().regex(/^\S*$/, "The firstName shouldn't contain whitespaces").optional(),
     userName: z.string().trim().regex(/^\S*$/, "The userName shouldn't contain whitespaces").optional(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
   }),
 });
 
