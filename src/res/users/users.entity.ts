@@ -13,11 +13,12 @@ import { Role } from "../../config/roles";
 import { generateRandomString } from "../../utils/stringUtils";
 import { usersRepository } from "../../infra/dataSource";
 import { Post } from "../posts/posts.entity";
+import { Comment } from "../comments/comments.entity";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
-    id!: string;
+    id?: string;
 
   @Column({
     nullable: true,
@@ -43,16 +44,19 @@ export class User {
     enum: Role,
     default: Role.SIMPLE_USER,
   })
-    role!: Role;
+    role?: Role;
 
   @OneToMany(() => Post, (post) => post.author)
-    posts!: Post[];
+    posts?: Post[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+    comments?: Comment[];
 
   @CreateDateColumn()
-    createdAt!: Date;
+    createdAt?: Date;
 
   @UpdateDateColumn()
-    updateAt!: Date;
+    updateAt?: Date;
 
   @BeforeInsert()
   async setUserName() {

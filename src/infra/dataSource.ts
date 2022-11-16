@@ -1,7 +1,8 @@
 // import { join } from "path";
 // import { existsSync } from "fs";
 
-import { DataSource } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
+import { SeederOptions } from "typeorm-extension";
 // import { z } from "zod";
 
 import { isProd } from "../config/environment";
@@ -10,6 +11,11 @@ import {
 } from "../config/db";
 import { Post } from "../res/posts/posts.entity";
 import { User } from "../res/users/users.entity";
+import { Comment } from "../res/comments/comments.entity";
+import MainSeeder from "../seeding/main.seeder";
+import { UsersFactory } from "../res/users/users.factory";
+import { PostsFactory } from "../res/posts/posts.factory";
+import { CommentsFactory } from "../res/comments/comments.factory";
 // import { capitalize, toSingular } from "../utils/stringUtils";
 // import { resources, resourcesDir } from "../constants/resources";
 
@@ -17,7 +23,7 @@ import { User } from "../res/users/users.entity";
 //          USE MANUALLY IMPORTED ENTITIES           //
 // ================================================= //
 
-const entities = [User, Post];
+const entities = [User, Post, Comment];
 
 // ================================================= //
 //          DYNAMIC IMPORTS OF ENTITIES              //
@@ -52,7 +58,7 @@ const entities = [User, Post];
 //   }),
 // )).filter<z.infer<ReturnType<typeof entityClassSchema>>>(Boolean as any);
 
-export const dataSource = new DataSource({
+const options: DataSourceOptions & SeederOptions = {
   type: "mysql",
   host,
   port,
@@ -61,7 +67,11 @@ export const dataSource = new DataSource({
   database,
   entities,
   synchronize: !isProd,
-});
+  seeds: [MainSeeder],
+  factories: [UsersFactory, PostsFactory, CommentsFactory],
+};
+
+export const dataSource = new DataSource(options);
 
 // ================================================= //
 //                   REPOSITORIES                    //
@@ -75,3 +85,4 @@ export const dataSource = new DataSource({
 
 export const usersRepository = dataSource.getRepository(User);
 export const postsRepository = dataSource.getRepository(Post);
+export const commentsRepository = dataSource.getRepository(Comment);

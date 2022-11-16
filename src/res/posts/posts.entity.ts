@@ -3,7 +3,7 @@ import typeorm, {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  // OneToMany,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
@@ -16,13 +16,14 @@ import { generateRandomString, slugify } from "../../utils/stringUtils";
 // import { User } from "../../infra/entities";
 import { postsRepository } from "../../infra/dataSource";
 import { User } from "../users/users.entity";
+import { Comment } from "../comments/comments.entity";
 
 // import { postsRepository } from "./posts.repository";
 
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn("uuid")
-    id!: string;
+    id?: string;
 
   @Column()
     title!: string;
@@ -31,7 +32,7 @@ export class Post {
     content!: string;
 
   @Column({ default: false })
-    published!: boolean;
+    published?: boolean;
 
   // @Column({ nullable: true })// TODO: This should not be nullable: this is temporary
   @ManyToOne(() => User, (user) => user.posts)
@@ -40,8 +41,8 @@ export class Post {
   // @OneToMany(() => Reaction, (reaction) => reaction.post)
   //   reactions!: Reaction[];
 
-  // @OneToMany(() => Comment, (comment) => comment.post)
-  //   comments!: Comment[];
+  @OneToMany(() => Comment, (comment) => comment.post)
+    comments?: Comment[];
 
   @Column({ default: false })
     pinned?: boolean;
@@ -57,10 +58,10 @@ export class Post {
   //   tags!: Tag[];
 
   @CreateDateColumn()
-    createdAt!: Date;
+    createdAt?: Date;
 
   @UpdateDateColumn()
-    updatedAt!: Date;
+    updatedAt?: Date;
 
   @BeforeInsert()
   async setSlug() {

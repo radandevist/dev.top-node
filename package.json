@@ -19,9 +19,11 @@
     "dev": "nodemon $npm_package_main",
     "typecheck": "tsc",
     "lint": "eslint .",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "seed": "yarn build && yarn node:start dist/seeding/seed.js"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.6",
     "dotenv": "^16.0.3",
@@ -30,6 +32,7 @@
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.10",
+    "typeorm-extension": "^2.2.12",
     "winston": "^3.8.2",
     "winston-console-format": "^1.0.8",
     "zod": "^3.19.1"
