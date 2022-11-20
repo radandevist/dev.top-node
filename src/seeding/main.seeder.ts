@@ -6,14 +6,14 @@ import { User } from "../res/users/users.entity";
 import { Comment } from "../res/comments/comments.entity";
 import { getRandomElements } from "../utils/arrayUtils";
 
-export default class MainSeeder implements Seeder {
+export class MainSeeder implements Seeder {
   // eslint-disable-next-line class-methods-use-this
   public async run(
     dataSource: DataSource,
     factoryManager: SeederFactoryManager,
   ): Promise<any> {
-    const postsRepo = dataSource.getRepository(Post);
-    const commentsRepo = dataSource.getRepository(Comment);
+    const postsRepository = dataSource.getRepository(Post);
+    const commentsRepository = dataSource.getRepository(Comment);
 
     const userFactory = factoryManager.get(User);
     const postsFactory = factoryManager.get(Post);
@@ -29,7 +29,7 @@ export default class MainSeeder implements Seeder {
           return made;
         }),
     );
-    await postsRepo.save(posts);
+    await postsRepository.save(posts);
 
     const comments = await Promise.all(
       Array(33)
@@ -42,6 +42,6 @@ export default class MainSeeder implements Seeder {
           return make;
         }),
     );
-    await commentsRepo.save(comments);
+    await commentsRepository.save(comments);
   }
 }

@@ -28,5 +28,21 @@ export const createPostSchema = z.object({
   }),
 });
 
+export const getManyPostsSchema = z.object({
+  query: z.object({
+    page: z.string()
+      .refine((value) => !Number.isNaN(Number(value)), "Page query must be a number")
+      .optional(),
+    limit: z.string()
+      .refine((value) => !Number.isNaN(Number(value)), "Limit query must be a number")
+      .optional(),
+    populate: z.array(z.string({ invalid_type_error: "Populate query must only contain strings" }), {
+      invalid_type_error: "Populate query must be an array",
+    }).optional(),
+  }),
+});
+
 export type CreatePostSchema = TypeOf<typeof createPostSchema>;
 export type CreatePostBody = CreatePostSchema["body"];
+
+export type GetManyPostsQuery = TypeOf<typeof getManyPostsSchema>["query"];

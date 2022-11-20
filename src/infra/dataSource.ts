@@ -12,7 +12,7 @@ import {
 import { Post } from "../res/posts/posts.entity";
 import { User } from "../res/users/users.entity";
 import { Comment } from "../res/comments/comments.entity";
-import MainSeeder from "../seeding/main.seeder";
+import { MainSeeder } from "../seeding/main.seeder";
 import { UsersFactory } from "../res/users/users.factory";
 import { PostsFactory } from "../res/posts/posts.factory";
 import { CommentsFactory } from "../res/comments/comments.factory";

@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   OneToMany,
+  AfterLoad,
 } from "typeorm";
 import bcrypt from "bcryptjs";
 
@@ -79,6 +80,21 @@ export class User {
   }
 
   async comparePassword(candidatePassword: string) {
-    return bcrypt.compare(candidatePassword, this.password);
+    return bcrypt.compare(candidatePassword, this.#password || "");
+  }
+
+  /**
+   * This property is likely to be used only for filtering password
+   * after loading an user.
+   * the leading # is important because it tells javascript that the
+   * property marked is private so won't be parsed and showed in the
+   * display response.
+   * */
+  #password?: string;
+
+  @AfterLoad()
+  filterPassword() {
+    this.#password = this.password;
+    this.password = undefined as unknown as string;
   }
 }

@@ -1,3 +1,5 @@
+import { FindOptionsUtils } from "typeorm";
+
 import { postsRepository, usersRepository } from "../../infra/dataSource";
 
 import { Post } from "./posts.entity";
@@ -16,54 +18,30 @@ export async function createPost(input: CreatePostInput) {
   return postsRepository.save(post);
 }
 
-/* type FindManyPostsInput = {
-  page: number;
-  take: number;
-}; */
+type FindManyPostsInput = {
+  page?: number;
+  limit?: number;
+  populate?: string[];
+};
 
-export async function findManyPosts(/* { page, take }: FindManyPostsInput */) {
-  // '/posts?' + s
-  // const s = qs.stringify({
-  //   page: 1,
-  //   limit: 10,
-  //   populate: [
-  //     { relation: "author" },
-  //     {
-  //       relation: "comments",
-  //       page: 1,
-  //       limit: 3,
-  //       populate: [
-  //         { relation: "author" }
-  //       ]
-  //     }
-  //   ]
-  // })
+const DEFAULT_LIMIT = 5;
+const DEFAULT_PAGE = 1;
 
-  // const skip = (page - 1) * take;
+export async function findManyPosts({
+  limit = DEFAULT_LIMIT,
+  page = DEFAULT_PAGE,
+  populate = [],
+}: FindManyPostsInput) {
+  const skip = limit * (page - 1);
 
-  // const posts = await postsRepository.find({
-  //   take,
-  //   skip,
-  //   relations: {
-  //     author: true,
-  //     comments: true,
-  //   },
-  // });
-  // const leagueMembers = await connection
-  //   .createQueryBuilder(User, "user")
-  //   .leftJoin("user.leagues", "league", "league.id = :leagueId"; { leagueId })
-  //   .orderBy("user.id")
-  //   .skip(..)
-  //   .take(..)
-  //   .getMany();
+  const qb = postsRepository.createQueryBuilder("post");
+  // example value for populate: ["author", "comments", "comments.author"]
+  FindOptionsUtils.applyRelationsRecursively(qb, populate, qb.alias, postsRepository.metadata, "");
 
-  // const posts = postsRepository.createQueryBuilder()
-  //   .skip(skip)
-  //   .take(take)
-  //   // .relation("author")
-  //   // .relation("comments");
-  //   // .leftJoin()
-  //   .innerJoinAndMapMany()
-  // return posts;
-  return "";
+  const posts = await qb
+    .take(limit)
+    .skip(skip)
+    .getMany();
+
+  return { count: limit, page, posts };
 }

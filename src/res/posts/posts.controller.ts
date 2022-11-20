@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { ok } from "../../helpers/responseFormatter";
 import { log } from "../../helpers/logger";
 
-import { createPost } from "./posts.services";
+import { createPost, findManyPosts } from "./posts.services";
 import { CreatePostBody } from "./posts.validations";
 
 // '/posts?' + s
@@ -22,12 +22,13 @@ import { CreatePostBody } from "./posts.validations";
 //     }
 //   ]
 // })
-export function getPostsHandler(req: Request, res: Response) {
+export async function getManyPostsHandler(req: Request, res: Response) {
   try {
     log.info("parsed query", req.query);
 
-    // await posts = findManyPosts();
-    res.send("fuck off");
+    const posts = await findManyPosts(req.query);
+    log.info("posts", posts);
+    res.send(ok(posts));
   } catch (error) {
     res.status(500).send(error);
   }
