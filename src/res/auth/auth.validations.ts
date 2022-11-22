@@ -1,6 +1,6 @@
 import { z, TypeOf } from "zod";
 
-import { containSpaceRegex } from "../../constants/validations";
+import { containSpaceRegex } from "../../constants/regex";
 
 export const registerSchema = z.object({
   body: z.object({

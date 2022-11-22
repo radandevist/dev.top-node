@@ -1,8 +1,8 @@
 import { Router } from "express";
 
-import { createUserHandler } from "./users.controller";
+import { getUserHandler } from "./users.controller";
 
 export const path = "/users";
 export const router = Router();
 
-router.post("/", createUserHandler);
+router.get("/", getUserHandler);

@@ -1,11 +1,13 @@
 {
   "cSpell.words": [
     "Andrianarisoa",
+    "APIV",
+    "longtext",
     "middlewares",
+    "openapi",
     "swcrc",
     "typeorm",
-    "whitespaces",
-    "longtext"
+    "whitespaces"
   ],
   "files.associations": {
     ".swcrc.build": "json"
