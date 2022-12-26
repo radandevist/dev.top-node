@@ -7,3 +7,7 @@ export async function findUserByEmail(email: string) {
 export async function findUserByUserName(userName: string) {
   return usersRepository.findOneBy({ userName });
 }
+
+export async function findUserById(id: string) {
+  return usersRepository.findOneBy({ id });
+}
