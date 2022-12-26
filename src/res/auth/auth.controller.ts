@@ -1,36 +1,109 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
-import { log } from "../../helpers/logger";
 import { ok } from "../../helpers/responseFormatter";
-import { findUserByEmail, findUserByUserName } from "../users/users.services";
+import { AppError } from "../../classes/AppError";
+import { createSession, deleteSessionById, verifySession } from "../sessions/sessions.services";
 
-import { registerUser } from "./auth.services";
-import { RegisterBody } from "./auth.validations";
+import {
+  createAccessToken,
+  registerUser,
+  setRefreshCookie,
+  loginUser,
+  clearRefreshCookie,
+} from "./auth.services";
+import { LoginBody, RegisterBody } from "./auth.validations";
 
 export async function registerHandler(
   req: Request<EmptyObj, EmptyObj, RegisterBody>,
   res: Response,
+  next: NextFunction,
 ) {
   try {
-    const [userWithEmail, userWithUserName] = await Promise.all([
-      findUserByEmail(req.body.email),
-      ...(req.body.userName ? [findUserByUserName(req.body.userName)] : []),
-    ]);
+    const { message, user } = await registerUser(req.body);
 
-    if (userWithEmail) {
-      res.status(400).send("Email already in use");
-      return;
-    }
-    if (userWithUserName) {
-      res.status(400).send("UserName already in use");
-      return;
-    }
+    if (message) throw new AppError(409, message);
 
-    const user = await registerUser(req.body);
-    log.info("registered user", user);
-    res.status(200).send(ok({ user }));
+    res.status(201).send(ok({ user }));
   } catch (error) {
-    log.error(error);
-    res.status(500).send(error);
+    next(error);
+  }
+}
+
+export async function loginHandler(
+  req: Request<EmptyObj, EmptyObj, LoginBody>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { expired, session, decoded } = await verifySession(req);
+
+    if (expired) {
+      await deleteSessionById(decoded.sessionId);
+      clearRefreshCookie(res);
+    }
+
+    if (session) throw new AppError(409, "Already logged in");
+
+    const user = await loginUser(req.body);
+
+    if (!user) throw new AppError(401, "Email or password invalid");
+
+    const newSession = await createSession({
+      user,
+      IPAddress: req.socket.remoteAddress || "not-defined",
+      userAgent: req.headers["user-agent"] || "not-defined",
+    });
+
+    setRefreshCookie(res, newSession.token);
+
+    const { token, expiredAt } = createAccessToken({ userId: user.id });
+
+    res.status(201).send(ok({ accessToken: `Bearer ${token}`, user, expiredAt }));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function refreshHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { expired, session, decoded } = await verifySession(req);
+
+    if (expired) {
+      await deleteSessionById(decoded.sessionId);
+      clearRefreshCookie(res);
+    }
+
+    if (!session) {
+      throw new AppError(401, "Login required");
+    }
+
+    const { token, expiredAt } = createAccessToken({ userId: session.user.id });
+
+    res.status(200).send(ok({ accessToken: `Bearer ${token}`, user: session.user, expiredAt }));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function logoutHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { session, decoded } = await verifySession(req);
+
+    if (!session) throw new AppError(401, "Already logged out");
+
+    await deleteSessionById(decoded.sessionId);
+    clearRefreshCookie(res);
+
+    res.status(200).send(ok({ user: session.user }));
+  } catch (error: any) {
+    next(error);
   }
 }

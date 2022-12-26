@@ -23,7 +23,7 @@ import { Comment } from "../comments/comments.entity";
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn("uuid")
-    id?: string;
+    id!: string;
 
   @Column()
     title!: string;
@@ -32,9 +32,8 @@ export class Post {
     content!: string;
 
   @Column({ default: false })
-    published?: boolean;
+    published!: boolean;
 
-  // @Column({ nullable: true })// TODO: This should not be nullable: this is temporary
   @ManyToOne(() => User, (user) => user.posts)
     author!: typeorm.Relation<User>;
 
@@ -42,26 +41,32 @@ export class Post {
   //   reactions!: Reaction[];
 
   @OneToMany(() => Comment, (comment) => comment.post)
-    comments?: Comment[];
+    comments!: Comment[];
 
   @Column({ default: false })
-    pinned?: boolean;
+    pinned!: boolean;
 
   @Column({ nullable: true })
     coverImage?: string;
 
   @Column()
-    slug?: string; // Basically, a slug of the title
+    slug!: string; // Basically, a slug of the title
 
   // @ManyToMany(() => Tag)
   // @JoinTable()
   //   tags!: Tag[];
 
   @CreateDateColumn()
-    createdAt?: Date;
+    createdAt!: Date;
 
   @UpdateDateColumn()
-    updatedAt?: Date;
+    updatedAt!: Date;
+
+  @Column({
+    type: "boolean",
+    default: false,
+  })
+    deleted!: boolean;
 
   @BeforeInsert()
   async setSlug() {

@@ -11,8 +11,11 @@ import {
 } from "../config/db";
 import { Post } from "../res/posts/posts.entity";
 import { User } from "../res/users/users.entity";
+import { Session } from "../res/sessions/sessions.entity";
 import { Comment } from "../res/comments/comments.entity";
+// Seeders
 import { MainSeeder } from "../seeding/main.seeder";
+// Factories
 import { UsersFactory } from "../res/users/users.factory";
 import { PostsFactory } from "../res/posts/posts.factory";
 import { CommentsFactory } from "../res/comments/comments.factory";
@@ -23,7 +26,7 @@ import { CommentsFactory } from "../res/comments/comments.factory";
 //          USE MANUALLY IMPORTED ENTITIES           //
 // ================================================= //
 
-const entities = [User, Post, Comment];
+const entities = [User, Session, Post, Comment];
 
 // ================================================= //
 //          DYNAMIC IMPORTS OF ENTITIES              //
@@ -86,3 +89,4 @@ export const dataSource = new DataSource(options);
 export const usersRepository = dataSource.getRepository(User);
 export const postsRepository = dataSource.getRepository(Post);
 export const commentsRepository = dataSource.getRepository(Comment);
+export const sessionsRepository = dataSource.getRepository(Session);

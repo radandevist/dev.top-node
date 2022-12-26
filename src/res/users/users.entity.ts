@@ -7,19 +7,21 @@ import {
   UpdateDateColumn,
   OneToMany,
   AfterLoad,
+  AfterInsert,
 } from "typeorm";
 import bcrypt from "bcryptjs";
 
 import { Role } from "../../config/roles";
 import { generateRandomString } from "../../utils/stringUtils";
 import { usersRepository } from "../../infra/dataSource";
+import { Session } from "../sessions/sessions.entity";
 import { Post } from "../posts/posts.entity";
 import { Comment } from "../comments/comments.entity";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
-    id?: string;
+    id!: string;
 
   @Column({
     nullable: true,
@@ -32,32 +34,35 @@ export class User {
   @Column({
     unique: true,
   })
-    userName?: string;
+    userName!: string;
 
   @Column({ unique: true })
     email!: string;
 
   @Column()
-    password!: string;
+    password?: string;
 
   @Column({
     type: "enum",
     enum: Role,
     default: Role.SIMPLE_USER,
   })
-    role?: Role;
+    role!: Role;
 
   @OneToMany(() => Post, (post) => post.author)
-    posts?: Post[];
+    posts!: Post[];
 
   @OneToMany(() => Comment, (comment) => comment.author)
-    comments?: Comment[];
+    comments!: Comment[];
+
+  @OneToMany(() => Session, (session) => session.user)
+    sessions!: Session[];
 
   @CreateDateColumn()
-    createdAt?: Date;
+    createdAt!: Date;
 
   @UpdateDateColumn()
-    updateAt?: Date;
+    updateAt!: Date;
 
   @BeforeInsert()
   async setUserName() {
@@ -74,9 +79,17 @@ export class User {
     } while (whileCondition);
   }
 
+  @AfterLoad()
+  @AfterInsert()
+  setPasswordAsPrivate() {
+    this.#password = (this.password ?? "").slice();
+    this.password = undefined;
+  }
+
   @BeforeInsert() // TODO: This should be run before update too
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, await bcrypt.genSalt());
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.password = await bcrypt.hash(this.password!, await bcrypt.genSalt());
   }
 
   async comparePassword(candidatePassword: string) {

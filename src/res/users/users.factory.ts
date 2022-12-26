@@ -11,7 +11,7 @@ export const UsersFactory = setSeederFactory(User, (faker: Faker) => {
   user.password = faker.internet.password();
 
   user.firstName = faker.name.firstName();
-  user.userName = faker.internet.userName();
+  user.userName = faker.internet.userName(user.firstName, user.lastName);
 
   return user;
 });

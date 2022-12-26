@@ -13,10 +13,10 @@ import { User } from "../users/users.entity";
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn("uuid")
-    id?: string;
+    id!: string;
 
   @Column({ type: "longtext" })
-    text!: string;
+    content!: string;
 
   @ManyToOne(() => User, (user) => user.comments)
     author!: typeorm.Relation<User>;
@@ -25,8 +25,8 @@ export class Comment {
     post!: typeorm.Relation<Post>;
 
   @CreateDateColumn()
-    createdAt?: Date;
+    createdAt!: Date;
 
   @UpdateDateColumn()
-    updatedAt?: Date;
+    updatedAt!: Date;
 }

@@ -1,21 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { AnyZodObject } from "zod";
+import { AnyZodObject, ZodError } from "zod";
 
-import { log } from "../helpers/logger";
-
-// const resourceSchema = z.object({
-//   body: z.record(z.any()),
-//   query: z.record(z.any()),
-//   params: z.record(z.any()),
-// }).partial();
-
-// export type ResourceSchema = typeof resourceSchema;
-
-// export type ResourceObject = z.infer<ResourceSchema>;
-// export const a: ResourceObject = {};
+import { AppError } from "../classes/AppError";
 
 export function validateResource(schema: AnyZodObject) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     try {
       schema.parse({
         body: req.body,
@@ -24,8 +13,12 @@ export function validateResource(schema: AnyZodObject) {
       });
       next();
     } catch (error: any) {
-      log.error("resource validation failed", error.errors);
-      res.status(400).send(error.errors);
+      if (error instanceof ZodError) {
+        const appError = new AppError(400, error.errors[0].message);
+        next(appError);
+        return;
+      }
+      next(error);
     }
   };
 }
