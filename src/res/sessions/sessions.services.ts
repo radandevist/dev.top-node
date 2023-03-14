@@ -2,7 +2,7 @@
 import { Request } from "express";
 import jwt from "jsonwebtoken";
 import cuid from "@bugsnag/cuid";
-import { Session } from "@prisma/client";
+import { Session, User } from "@prisma/client";
 
 // import { sessionsRepository } from "../../infra/dataSource";
 import { jwt as jwtConfig } from "../../config/jwt";
@@ -37,7 +37,7 @@ export async function createSession(input: CreateSessionInput) {
 type VerifySessionResult =
 | { // successResult
   // valid: true;
-  session: Session;
+  session: Session & { user: User };
   expired: false;
   decoded: RefreshTokenPayload;
 }

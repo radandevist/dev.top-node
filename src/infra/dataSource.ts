@@ -14,7 +14,7 @@ import { User } from "../res/users/users.entity";
 import { Session } from "../res/sessions/sessions.entity";
 import { Comment } from "../res/comments/comments.entity";
 // Seeders
-import { MainSeeder } from "../seeding/main.seeder";
+import { MainSeeder } from "../seeding/main-typeorm.seeder";
 // Factories
 import { UsersFactory } from "../res/users/users.factory";
 import { PostsFactory } from "../res/posts/posts.factory";

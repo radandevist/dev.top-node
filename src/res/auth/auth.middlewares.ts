@@ -2,9 +2,10 @@ import {
   Request, Response, NextFunction,
 } from "express";
 import jwt from "jsonwebtoken";
+import { Role } from "@prisma/client";
 
+// import { Role } from "../../config/roles";
 import { AppError } from "../../classes/AppError";
-import { Role } from "../../config/roles";
 import { jwt as jwtConfig } from "../../config/jwt";
 import { findUserById } from "../users/users.services";
 

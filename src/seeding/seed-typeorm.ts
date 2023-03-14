@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import "../../dotenv";
+import "../../scripts/dotenv";
 
 import { runSeeders } from "typeorm-extension";
 

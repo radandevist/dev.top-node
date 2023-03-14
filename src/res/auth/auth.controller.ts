@@ -19,7 +19,11 @@ export async function registerHandler(
   next: NextFunction,
 ) {
   try {
-    const { message, user } = await registerUser(req.body);
+    const { firstName, ...restOfReqBody } = req.body;
+    const { message, user } = await registerUser({
+      ...restOfReqBody,
+      ...(firstName ? { firstName } : { firstName: null }),
+    });
 
     if (message) throw new AppError(409, message);
 
@@ -49,7 +53,7 @@ export async function loginHandler(
     if (!user) throw new AppError(401, "Email or password invalid");
 
     const newSession = await createSession({
-      user,
+      userId: user.id,
       IPAddress: req.socket.remoteAddress || "not-defined",
       userAgent: req.headers["user-agent"] || "not-defined",
     });
@@ -81,7 +85,7 @@ export async function refreshHandler(
       throw new AppError(401, "Login required");
     }
 
-    const { token, expiredAt } = createAccessToken({ userId: session.user.id });
+    const { token, expiredAt } = createAccessToken({ userId: session.userId });
 
     res.status(200).send(ok({ accessToken: `Bearer ${token}`, user: session.user, expiredAt }));
   } catch (error) {

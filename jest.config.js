@@ -1,4 +1,4 @@
-import { getSWCJestConfig } from "./utils/jestConfigUtils.js";
+import { getSWCJestConfig } from "./scripts/utils/jestConfigUtils.js";
 
 /*
  * For a detailed explanation regarding each configuration property, visit:
