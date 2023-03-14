@@ -1,4 +1,5 @@
 import { config } from "dotenv";
+import { expand } from "dotenv-expand";
 
 import { getEnvFile } from "./utils/dotenvUtils.js";
 
@@ -10,4 +11,9 @@ const env = process.env.NODE_ENV || "development";
  * The dotenv module will override any variables passed to the command,
  * if it is also defined in th .env file.
  */
-config({ path: getEnvFile(env) });
+const dotConf = config({ path: getEnvFile(env) });
+
+/**
+ * @see https://github.com/motdotla/dotenv-expand
+ */
+expand(dotConf);

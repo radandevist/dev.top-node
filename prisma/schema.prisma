@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+model User {
+  id        String    @id @unique @default(cuid())
+  userName  String    @unique
+  firstName String?
+  lastName  String
+  email     String    @unique
+  password  String
+  verified  Boolean?  @default(false)
+  role      Role      @default(AUTHENTICATED)
+  posts     Post[]
+  comments  Comment[]
+  sessions  Session[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Post {
+  id            String    @id @unique @default(cuid())
+  title         String
+  subtitle      String?
+  content       String
+  coverImageUrl String?
+  slug          String
+  deleted       Boolean  @default(false)
+  pinned        Boolean  @default(false)
+  published     Boolean  @default(false)
+  publishedAt   DateTime  @default(now())
+  author        User      @relation(fields: [userId], references: [id])
+  comments      Comment[]
+  userId        String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Comment {
+  id      String @id @unique @default(cuid())
+  content String @db.Text
+  author  User   @relation(fields: [userId], references: [id])
+  post    Post   @relation(fields: [postId], references: [id])
+  userId  String
+  postId  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Session {
+  id        String @id @unique @default(cuid())
+  token     String @db.VarChar(350)
+  userAgent String
+  IPAddress String
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum Role {
+  AUTHENTICATED
+  AUTHOR
+  ADMIN
+}
