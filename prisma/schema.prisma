@@ -11,28 +11,29 @@ datasource db {
 }
 
 model User {
-  id        String    @id @unique @default(cuid())
-  userName  String    @unique
-  firstName String?
-  lastName  String
-  email     String    @unique
-  password  String
-  verified  Boolean   @default(false)
-  role      Role      @default(AUTHENTICATED)
-  posts     Post[]
-  comments  Comment[]
-  sessions  Session[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id            String    @id @unique @default(cuid())
+  firstName     String?
+  lastName      String
+  userName      String    @unique
+  email         String    @unique
+  password      String
+  role          Role      @default(AUTHENTICATED)
+  verified      Boolean   @default(false)
+  profilePicUrl String?
+  posts         Post[]
+  comments      Comment[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Post {
   id            String    @id @unique @default(cuid())
   title         String
   subtitle      String?
-  content       String
+  content       String    @db.Text
   coverImageUrl String?
-  slug          String
+  slug          String    @unique
   deleted       Boolean   @default(false)
   pinned        Boolean   @default(false)
   published     Boolean   @default(false)

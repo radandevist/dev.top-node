@@ -42,7 +42,7 @@ export class Session {
     updatedAt!: Date;
 
   @BeforeInsert()
-  createToken() {
+  createToken() { // TODO: adapt into a prisma middleware
     if (!this.id) this.id = v4();
     const { secret, lifeTime } = jwtConfig.refreshToken;
     const payload: RefreshTokenPayload = { userId: this.user.id, sessionId: this.id };

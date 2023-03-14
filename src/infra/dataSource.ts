@@ -16,9 +16,9 @@ import { Comment } from "../res/comments/comments.entity";
 // Seeders
 import { MainSeeder } from "../seeding/main-typeorm.seeder";
 // Factories
-import { UsersFactory } from "../res/users/users.factory";
-import { PostsFactory } from "../res/posts/posts.factory";
-import { CommentsFactory } from "../res/comments/comments.factory";
+import { UsersFactory } from "../res/users/users-typeorm.factory";
+import { PostsFactory } from "../res/posts/posts-typeorm.factory";
+import { CommentsFactory } from "../res/comments/comments-typeorm.factory";
 // import { capitalize, toSingular } from "../utils/stringUtils";
 // import { resources, resourcesDir } from "../constants/resources";
 

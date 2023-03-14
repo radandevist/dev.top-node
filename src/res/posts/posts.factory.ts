@@ -1,21 +1,17 @@
+import { Post } from "@prisma/client";
 import { Faker } from "@faker-js/faker";
-import { setSeederFactory } from "typeorm-extension";
 
-import { Post } from "./posts.entity";
+export const postFactory = (faker: Faker) => {
+  const post = {} as Post;
 
-export const PostsFactory = setSeederFactory(Post, (faker: Faker) => {
-  const post = new Post();
-
-  // mandatory fields
   post.title = faker.lorem.sentence();
-  post.content = faker.lorem.sentence();
-  // post.author
-
-  // not mandatory
-  post.published = faker.datatype.boolean();
-  post.pinned = faker.datatype.boolean();
-  post.coverImage = faker.image.image();
+  post.subtitle = faker.lorem.sentence();
+  post.content = faker.lorem.paragraphs(1);
+  post.coverImageUrl = faker.image.imageUrl();
   post.slug = faker.helpers.slugify(post.title);
+  post.deleted = faker.datatype.boolean();
+  post.pinned = faker.datatype.boolean();
+  post.published = faker.datatype.boolean();
 
   return post;
-});
+};

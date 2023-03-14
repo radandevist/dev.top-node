@@ -5,10 +5,10 @@ import bcrypt from "bcryptjs";
 
 // import { User } from "../users/users.entity";
 // import { usersRepository } from "../../infra/dataSource";
+// import { generateRandomString } from "../../utils/stringUtils";
 import { jwt as jwtConfig } from "../../config/jwt";
 import { findUserByEmail, findUserByUserName } from "../users/users.services";
 import { prisma } from "../../infra/prisma";
-import { generateRandomString } from "../../utils/stringUtils";
 
 export type RegisterInput = Pick<User, "email" | "password" | "lastName" | "firstName"> & {
   // eslint-disable-next-line max-len
@@ -45,21 +45,29 @@ export async function registerUser(input: RegisterInput): Promise<RegisterResult
     return errorResult;
   }
 
-  let assignedUserName = input.userName;
+  const userName = input.userName
+    || ""; // * important, a prisma middleware (hook) will assign an userName in this case.
 
-  if (!assignedUserName) {
-    let whileCondition = true;
+  // const assignedUserName = input.userName;
 
-    do {
-      assignedUserName = input.lastName + generateRandomString(5);
-      // eslint-disable-next-line no-await-in-loop
-      const foundUser = await prisma.user.findFirst({ where: { userName: assignedUserName } });
-      whileCondition = !!foundUser;
-    } while (whileCondition);
-  }
+  // if (!assignedUserName) {
+  //   let whileCondition = true;
+
+  //   do {
+  //     assignedUserName = input.lastName + generateRandomString(5);
+  //     // eslint-disable-next-line no-await-in-loop
+  //     const foundUser = await prisma.user.findFirst({ where: { userName: assignedUserName } });
+  //     whileCondition = !!foundUser;
+  //   } while (whileCondition);
+  // }
 
   // const user = await usersRepository.save(usersRepository.create(input));
-  const user = await prisma.user.create({ data: { ...input, userName: assignedUserName } });
+  const user = await prisma.user.create({
+    data: {
+      ...input,
+      userName,
+    },
+  });
 
   // successResult
   return {
