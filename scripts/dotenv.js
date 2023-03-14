@@ -1,3 +1,5 @@
+/* eslint-disable import/extensions */
+
 import { config } from "dotenv";
 import { expand } from "dotenv-expand";
 

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import "../dotenv";
+import "../scripts/dotenv";
 
 import { server } from "./infra/server";
 import { dataSource } from "./infra/dataSource";
