@@ -1,16 +1,37 @@
+// import { v4 } from "uuid";
 import { Request } from "express";
 import jwt from "jsonwebtoken";
+import cuid from "@bugsnag/cuid";
+import { Session } from "@prisma/client";
 
-import { sessionsRepository } from "../../infra/dataSource";
+// import { sessionsRepository } from "../../infra/dataSource";
 import { jwt as jwtConfig } from "../../config/jwt";
+import { prisma } from "../../infra/prisma";
 
-import { RefreshTokenPayload, Session } from "./sessions.entity";
+// import { RefreshTokenPayload, Session } from "./sessions.entity";
 
-type CreateSessionInput = Pick<Session, "IPAddress" | "userAgent" | "user">;
+export type RefreshTokenPayload = {
+  userId: string;
+  sessionId: string;
+};
+
+type CreateSessionInput = Pick<Session, "IPAddress" | "userAgent" | "userId">;
+
+function createToken(userId: string) {
+  const sessionId = cuid();
+
+  const { secret, lifeTime } = jwtConfig.refreshToken;
+  const payload: RefreshTokenPayload = { userId, sessionId };
+
+  const token = jwt.sign(payload, secret, { algorithm: "HS256", expiresIn: lifeTime });
+  return token;
+}
 
 export async function createSession(input: CreateSessionInput) {
-  const session = sessionsRepository.create(input);
-  return sessionsRepository.save(session);
+  // const session = sessionsRepository.create(input);
+  // return sessionsRepository.save(session);
+  const token = createToken(input.userId);
+  return prisma.session.create({ data: { ...input, token } });
 }
 
 type VerifySessionResult =
@@ -51,7 +72,14 @@ export async function verifySession(req: Request): Promise<VerifySessionResult> 
     return { decoded, ...errorResult };
   }
 
-  const session = await sessionsRepository.findOne({ where: { id: decoded.sessionId }, relations: ["user"] });
+  // eslint-disable-next-line max-len
+  // const session = await sessionsRepository.findOne({ where: { id: decoded.sessionId }, relations: ["user"] });
+  const session = await prisma.session.findUnique({
+    where: { id: decoded.sessionId },
+    include: {
+      user: true,
+    },
+  });
 
   if (
     !session
@@ -71,5 +99,6 @@ export async function verifySession(req: Request): Promise<VerifySessionResult> 
 }
 
 export async function deleteSessionById(id: string) {
-  await sessionsRepository.delete({ id });
+  // await sessionsRepository.delete({ id });
+  await prisma.session.delete({ where: { id } });
 }

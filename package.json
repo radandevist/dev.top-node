@@ -26,6 +26,7 @@
     "prisma": "node ./scripts/prisma.js"
   },
   "dependencies": {
+    "@bugsnag/cuid": "^3.0.2",
     "@faker-js/faker": "^7.6.0",
     "@prisma/client": "4.11.0",
     "bcryptjs": "^2.4.3",
