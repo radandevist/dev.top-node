@@ -5,8 +5,13 @@ import { userFactory } from "../res/users/users.factory";
 import { log } from "../helpers/logger";
 import { postFactory } from "../res/posts/posts.factory";
 
-export async function run(prismaClient: PrismaClient) {
-  const madeUsers = Array.from({ length: 1 }).map(() => userFactory(faker));
+type RunConfig = {
+  usersNum: number;
+  postsNum: number;
+};
+
+export async function run(prismaClient: PrismaClient, { usersNum, postsNum }: RunConfig) {
+  const madeUsers = Array.from({ length: usersNum }).map(() => userFactory(faker));
 
   await prismaClient.user.createMany({ data: madeUsers });
   const users = await prismaClient.user.findMany();
@@ -14,7 +19,7 @@ export async function run(prismaClient: PrismaClient) {
 
   const userIds = users.map((user) => user.id);
 
-  const madePosts = Array.from({ length: 17 }).map(() => {
+  const madePosts = Array.from({ length: postsNum }).map(() => {
     const post = postFactory(faker);
     post.userId = faker.helpers.arrayElement(userIds);
     // randomly set a value for now

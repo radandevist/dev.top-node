@@ -11,7 +11,8 @@ export const userFactory = (faker: Faker) => {
   // user.userName = faker.datatype.boolean()
   //   ? faker.internet.userName(user.firstName, user.lastName)
   //   : undefined;
-  user.userName = "";
+  // user.userName = ""; // prism middleware will change this.
+  // user.userName = faker.internet.userName(user.firstName, user.lastName);
   user.email = faker.internet.email(user.firstName, user.lastName);
   user.password = "1234567890";
   user.role = Role.AUTHENTICATED;

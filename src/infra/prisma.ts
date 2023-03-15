@@ -9,5 +9,5 @@ export const prisma = new PrismaClient();
 prisma.$use(setUserUserNameOnCreate);
 prisma.$use(hashUserPasswordOnCreateAndUpdate);
 
-// // post
+// post
 prisma.$use(setPostSlugOnCreate);

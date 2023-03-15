@@ -1,18 +1,17 @@
 import "../../scripts/dotenv";
 
-import { PrismaClient } from "@prisma/client";
-
 import { prisma } from "../infra/prisma";
 import { log } from "../helpers/logger";
 
 import { run } from "./main.seeder";
 
-const prismaClient = new PrismaClient();
+const runConfig = {
+  usersNum: 5,
+  postsNum: 17,
+};
 
-try {
-  run(prismaClient);
-} catch (error) {
-  log.error(error);
-  prisma.$disconnect();
+run(prisma, runConfig).catch(async (reason) => {
+  log.error(reason);
+  await prisma.$disconnect();
   process.exit(1);
-}
+});
