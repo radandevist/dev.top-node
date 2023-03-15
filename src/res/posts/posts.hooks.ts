@@ -13,7 +13,8 @@ export const setPostSlugOnCreate: Prisma.Middleware = async (params, next) => {
       let { slug, title } = params.args.data;
 
       if (slug) {
-        return next(params);
+        await next(params);
+        return;
       }
 
       let whileCondition = true;
@@ -26,5 +27,6 @@ export const setPostSlugOnCreate: Prisma.Middleware = async (params, next) => {
       } while (whileCondition);
     }
   }
-  return next(params);
+  await next(params);
+  // return;
 };

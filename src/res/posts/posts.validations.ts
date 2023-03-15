@@ -29,10 +29,10 @@ export const createPostSchema = z.object({
   }),
 });
 
-export const getManyPostsSchema = z.object({
+export const getHomePostsSchema = z.object({
   query: getManyItemsQuerySchema,
 });
 
 export type CreatePostBody = TypeOf<typeof createPostSchema>["body"];
 
-export type GetManyPostsQuery = TypeOf<typeof getManyPostsSchema>["query"];
+export type GetHomePostsQuery = TypeOf<typeof getHomePostsSchema>["query"];

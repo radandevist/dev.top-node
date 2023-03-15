@@ -1,35 +1,33 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 import { ok } from "../../helpers/responseFormatter";
-import { log } from "../../helpers/logger";
 
-import { findManyPosts } from "./posts.services";
+import { getHomePostsList } from "./posts.services";
+import { GetHomePostsQuery } from "./posts.validations";
 
-// '/posts?' + s
-// const s = qs.stringify({
-//   page: 1,
-//   limit: 10,
-//   populate: [
-//     { relation: "author" },
-//     {
-//       relation: "comments",
-//       page: 1,
-//       limit: 3,
-//       populate: [
-//         { relation: "author" }
-//       ]
-//     }
-//   ]
-// })
-export async function getManyPostsHandler(req: Request, res: Response) {
+// export async function getManyPostsHandler(req: Request, res: Response) {
+//   try {
+//     log.info("parsed query", req.query);
+
+//     const posts = await findManyPosts(req.query);
+//     log.info("posts", posts);
+//     res.send(ok(posts));
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// }
+
+export async function getHomePostsHandler(
+  req: Request<EmptyObj, EmptyObj, GetHomePostsQuery>,
+  res: Response,
+  next: NextFunction,
+) {
   try {
-    log.info("parsed query", req.query);
-
-    const posts = await findManyPosts(req.query);
-    log.info("posts", posts);
+    const posts = await getHomePostsList(req.query);
     res.send(ok(posts));
   } catch (error) {
-    res.status(500).send(error);
+    // res.status(500).send(error);
+    next(error);
   }
 }
 

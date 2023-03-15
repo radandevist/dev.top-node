@@ -12,7 +12,9 @@ export const getManyItemsQuerySchema = z.object({
     .refine((value) => !Number.isNaN(Number(value)), "Limit query must be a number")
     .transform((value) => Number(value))
     .optional(),
-  populate: z.array(z.string({ invalid_type_error: "Populate query must only contain strings" }), {
-    invalid_type_error: "Populate query must be an array",
-  }).optional(),
+  // ! populate is not valid anymore since we are using prisma now
+  // eslint-disable-next-line max-len
+  // populate: z.array(z.string({ invalid_type_error: "Populate query must only contain strings" }), {
+  //   invalid_type_error: "Populate query must be an array",
+  // }).optional(),
 });

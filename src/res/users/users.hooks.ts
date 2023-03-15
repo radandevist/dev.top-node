@@ -3,11 +3,16 @@ import bcrypt from "bcryptjs";
 
 import { generateRandomString } from "../../utils/stringUtils";
 import { prisma } from "../../infra/prisma";
+// import { log } from "../../helpers/logger";
 
 /**
  * Automatically assign an userName if it is omitted in the input
  */
 export const setUserUserNameOnCreate: Prisma.Middleware = async (params, next) => {
+  console.log('====================================');
+  console.log(params);
+  console.log('====================================');
+
   if (params.model === "User") {
     if (
       params.action === "create"
@@ -31,9 +36,13 @@ export const setUserUserNameOnCreate: Prisma.Middleware = async (params, next) =
     }
   }
   return next(params);
+  // return;
 };
 
 export const hashUserPasswordOnCreateAndUpdate: Prisma.Middleware = async (params, next) => {
+  // console.log('====================================');
+  // console.log(params);
+  // console.log('====================================');
   if (params.model === "User") {
     if (
       params.action === "create"
@@ -42,14 +51,20 @@ export const hashUserPasswordOnCreateAndUpdate: Prisma.Middleware = async (param
       || params.action === "updateMany"
     ) {
       // eslint-disable-next-line prefer-const
-      let { password } = params.args.data;
+      // console.log('====================================');
+      // log.info('wtf', params.args);
+      // console.log('====================================');
 
-      if (!password) {
-        return next(params);
+      if (!params.args.data.password) {
+        await next(params);
+        return;
       }
 
-      password = await bcrypt.hash(password, await bcrypt.genSalt());
+      // eslint-disable-next-line no-param-reassign
+      params.args.data.password = await bcrypt
+        .hash(params.args.data.password, await bcrypt.genSalt());
     }
   }
-  return next(params);
+  next(params);
+  // return;
 };

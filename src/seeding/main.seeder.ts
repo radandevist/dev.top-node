@@ -6,7 +6,7 @@ import { log } from "../helpers/logger";
 import { postFactory } from "../res/posts/posts.factory";
 
 export async function run(prismaClient: PrismaClient) {
-  const madeUsers = Array.from({ length: 5 }).map(() => userFactory(faker));
+  const madeUsers = Array.from({ length: 1 }).map(() => userFactory(faker));
 
   await prismaClient.user.createMany({ data: madeUsers });
   const users = await prismaClient.user.findMany();
