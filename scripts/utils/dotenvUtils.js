@@ -1,5 +1,9 @@
-import { join } from "path";
-import { existsSync, lstatSync } from "fs";
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+// import { join } from "path";
+// import { existsSync, lstatSync } from "fs";
+const { join } = require("path");
+const { existsSync, lstatSync } = require("fs");
 
 const allowedEnvironments = Object.freeze(["development", "production", "test"]);
 
@@ -9,7 +13,7 @@ const allowedEnvironments = Object.freeze(["development", "production", "test"])
  * @param {"development" | "production" | "test"} env - The current environment variable.
  * @returns {string} The absolute path to the environment variable file.
  */
-export function getEnvFile(env) {
+function getEnvFile(env) {
   if (!allowedEnvironments.includes(env)) {
     throw Error(`unknown environment: '${env}'`);
   }
@@ -34,3 +38,5 @@ export function getEnvFile(env) {
   if (!envPath) throw Error("no valid .env file found");
   return envPath;
 }
+
+exports.getEnvFile = getEnvFile;

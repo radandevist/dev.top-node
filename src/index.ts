@@ -10,12 +10,14 @@ import { prisma } from "./infra/prisma";
 // await dataSource.initialize();
 // log.info("DataSource initialized");
 
-try {
+async function main() {
   server.listen(port, () => {
     log.info(`App is running on port ${port}`);
   });
-} catch (error) {
-  log.error(error);
+}
+
+main().catch(async (reason) => {
+  log.error(reason);
   await prisma.$disconnect();
   process.exit(1);
-}
+});

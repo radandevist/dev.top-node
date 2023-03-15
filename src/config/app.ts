@@ -1,4 +1,5 @@
-import packageJSON from "../../package.json" assert { type: "json" };
+// import packageJSON from "../../package.json" assert { type: "json" };
+import packageJSON from "../../package.json";
 
 const { author: npmAuthor } = packageJSON;
 

@@ -1,8 +1,8 @@
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   globals: {
-    __dirname: "off",
-    __filename: "off",
+    // __dirname: "off",
+    // __filename: "off",
     // custom utility types defined in @types/globals.d.ts
     AnyObj: "readonly",
     EmptyObj: "readonly",

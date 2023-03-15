@@ -1,4 +1,7 @@
-import { readFileSync } from "fs";
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+// import { readFileSync } from "fs";
+const { readFileSync } = require("fs");
 
 /**
  * @typedef {import('@swc/core').Config} SWCConfig
@@ -13,7 +16,9 @@ import { readFileSync } from "fs";
  * @param {string} swcConfigPath - The path to the swc config file to process.
  * @returns {SWCConfig} The processed config;
  */
-export const getSWCJestConfig = (swcConfigPath) => {
+const getSWCJestConfig = (swcConfigPath) => {
   const { exclude: _, ...jestSwcRc } = JSON.parse(readFileSync(swcConfigPath, "utf-8"));
   return jestSwcRc;
 };
+
+exports.getSWCJestConfig = getSWCJestConfig;

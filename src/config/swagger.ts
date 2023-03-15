@@ -1,6 +1,7 @@
 import { OpenAPIV3 } from "openapi-types";
 
-import packageJSON from "../../package.json" assert { type: "json" };
+// import packageJSON from "../../package.json" assert { type: "json" };
+import packageJSON from "../../package.json";
 
 import { author, port } from "./app";
 
