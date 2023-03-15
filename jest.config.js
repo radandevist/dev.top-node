@@ -1,12 +1,15 @@
-import { getSWCJestConfig } from "./scripts/utils/jestConfigUtils.js";
+/* eslint-disable import/extensions */
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+const { getSWCJestConfig } = require("./scripts/utils/jestConfigUtils");
 
 /*
  * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/configuration
  */
 /** @type {import('jest').Config} */
-export default {
-  setupFiles: ["./dotenv.js"],
+module.exports = {
+  setupFiles: ["./scripts/dotenv.js"],
   clearMocks: true,
   coverageProvider: "v8",
   transform: {
@@ -15,5 +18,5 @@ export default {
       getSWCJestConfig(".swcrc.build"),
     ],
   },
-  extensionsToTreatAsEsm: [".ts", ".tsx"],
+  // extensionsToTreatAsEsm: [".ts", ".tsx"],
 };

@@ -22,7 +22,8 @@
     "dev": "nodemon $npm_package_main",
     "typecheck": "tsc",
     "lint": "eslint .",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "jest",
+    "test:esm": "NODE_OPTIONS=--experimental-vm-modules jest",
     "seed": "yarn build && yarn node:start dist/seeding/seed.js",
     "prisma": "node ./scripts/prisma.js"
   },
