@@ -84,14 +84,16 @@ export async function getHomePostsList({
     },
     include: {
       author: true,
-      comments: {
-        orderBy: {
-          createdAt: "desc",
-        },
-        include: {
-          author: true,
-        },
-      },
+      reactions: true,
+      tags: true,
+      // comments: {
+      //   orderBy: {
+      //     createdAt: "desc",
+      //   },
+      //   include: {
+      //     author: true,
+      //   },
+      // },
     },
   });
 

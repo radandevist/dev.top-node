@@ -42,6 +42,7 @@ model Post {
   author        User      @relation(fields: [userId], references: [id])
   comments      Comment[]
   reactions     Reaction[]
+  tags          Tag[]
   userId        String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -82,10 +83,20 @@ model Reaction {
   userId    String
   post      Post     @relation(fields: [postId], references: [id])
   postId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum ReactionEnum {
   LIKE
   BOOKMARK
   UNICORN
+}
+
+model Tag {
+  id String   @id @unique @default(cuid())
+  name String @unique
+  posts Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
