@@ -11,41 +11,41 @@ datasource db {
 }
 
 model User {
-  id            String    @id @unique @default(cuid())
+  id            String     @id @unique @default(cuid())
   firstName     String?
   lastName      String
-  userName      String    @unique
-  email         String    @unique
+  userName      String     @unique
+  email         String     @unique
   password      String
-  role          Role      @default(AUTHENTICATED)
-  verified      Boolean   @default(false)
+  role          Role       @default(AUTHENTICATED)
+  verified      Boolean    @default(false)
   profilePicUrl String?
   posts         Post[]
   comments      Comment[]
   sessions      Session[]
   reactions     Reaction[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Post {
-  id            String    @id @unique @default(cuid())
+  id            String     @id @unique @default(cuid())
   title         String
   subtitle      String?
-  content       String    @db.Text
+  content       String     @db.Text
   coverImageUrl String?
-  slug          String    @unique
-  deleted       Boolean   @default(false)
-  pinned        Boolean   @default(false)
-  published     Boolean   @default(false)
-  publishedAt   DateTime  @default(now())
-  author        User      @relation(fields: [userId], references: [id])
+  slug          String     @unique
+  deleted       Boolean    @default(false)
+  pinned        Boolean    @default(false)
+  published     Boolean    @default(false)
+  publishedAt   DateTime   @default(now())
+  author        User       @relation(fields: [userId], references: [id])
   comments      Comment[]
   reactions     Reaction[]
   tags          Tag[]
   userId        String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Comment {
@@ -77,14 +77,14 @@ enum Role {
 }
 
 model Reaction {
-  id        String   @id @unique @default(cuid())
+  id        String       @id @unique @default(cuid())
   type      ReactionEnum
-  user      User     @relation(fields: [userId], references: [id])
+  user      User         @relation(fields: [userId], references: [id])
   userId    String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post         @relation(fields: [postId], references: [id])
   postId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   // @@unique([type, userId, postId]) // Maybe this should be handled by the app itself
 }
@@ -96,9 +96,10 @@ enum ReactionEnum {
 }
 
 model Tag {
-  id String   @id @unique @default(cuid())
-  name String @unique
-  posts Post[]
+  id        String   @id @unique @default(cuid())
+  name      String   @unique
+  color     String   @default("#000000")
+  posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

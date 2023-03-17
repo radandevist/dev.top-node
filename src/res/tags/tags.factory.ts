@@ -1,10 +1,10 @@
 import { Tag } from "@prisma/client";
 import { Faker } from "@faker-js/faker";
 
-export const tagFactory = (_faker: Faker) => {
+export const tagFactory = (faker: Faker) => {
   const tag = {} as Tag;
 
-  // tag. // nothing to do for now
+  tag.color = faker.color.rgb();
 
   return tag;
 };
