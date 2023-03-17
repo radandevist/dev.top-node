@@ -23,6 +23,7 @@ model User {
   posts         Post[]
   comments      Comment[]
   sessions      Session[]
+  reactions     Reaction[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -40,6 +41,7 @@ model Post {
   publishedAt   DateTime  @default(now())
   author        User      @relation(fields: [userId], references: [id])
   comments      Comment[]
+  reactions     Reaction[]
   userId        String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -71,4 +73,19 @@ enum Role {
   AUTHENTICATED
   AUTHOR
   ADMIN
+}
+
+model Reaction {
+  id        String   @id @unique @default(cuid())
+  type      ReactionEnum
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+}
+
+enum ReactionEnum {
+  LIKE
+  BOOKMARK
+  UNICORN
 }
