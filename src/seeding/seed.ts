@@ -8,6 +8,7 @@ import { run } from "./main.seeder";
 const runConfig = {
   usersNum: 5,
   postsNum: 17,
+  reactionsNum: 34,
 };
 
 run(prisma, runConfig).catch(async (reason) => {
