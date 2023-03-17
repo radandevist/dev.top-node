@@ -1,10 +1,11 @@
 import { faker } from "@faker-js/faker";
-import { PrismaClient } from "@prisma/client";
+import { Post, PrismaClient } from "@prisma/client";
 
 import { userFactory } from "../res/users/users.factory";
 import { log } from "../helpers/logger";
 import { postFactory } from "../res/posts/posts.factory";
 import { reactionFactory } from "../res/reactions/reactions.factory";
+import { tagFactory } from "../res/tags/tags.factory";
 
 type RunConfig = {
   usersNum: number;
@@ -28,12 +29,17 @@ export async function run(prismaClient: PrismaClient, {
 
   // =================== POSTS =======================//
   const madePosts = Array.from({ length: postsNum }).map(() => {
-    const post = postFactory(faker);
+    const post = postFactory(faker) as Post & { tags: any };
     post.userId = faker.helpers.arrayElement(userIds);
     // randomly set a value for now
     // TODO set the dateTime fields to a date after related user's creation
     // if (post.published) post.publishedAt = faker.datatype.datetime();
     // post.publishedAt = faker.datatype.datetime(); // default to now in schema
+
+    // // ! connect to existing tags
+    // post.tags = {
+    //   connect: faker.helpers.arrayElements(tagIds.map((id) => ({ id }))).slice(0, 4),
+    // };
 
     return post;
   });
@@ -62,4 +68,34 @@ export async function run(prismaClient: PrismaClient, {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const reactionsIds = reactions.map((reaction) => reaction.id);
+
+  // =================== TAGS =======================//
+  // for ensuring that tag names are unique we use the hardcoded array below
+  // const tagNames = ["React", "Prisma", "Midlleware", "General Coding", "HTML"];
+  const tagNames = [...new Set(faker.lorem.words(10).split(" "))];
+
+  const madeTags = tagNames.map((name) => {
+    const tag = tagFactory(faker);
+    tag.name = name;
+    return tag;
+  });
+
+  // await prismaClient.tag.createMany({ data: madeTags });
+  await Promise.all(madeTags.map(async (tag) => {
+    await prismaClient.tag.create({
+      data: {
+        ...tag,
+        posts: {
+          connect: faker.helpers.arrayElements(postsIds.map((id) => ({ id }))),
+        },
+      },
+    });
+  }));
+  const tags = await prismaClient.tag.findMany();
+  log.info("tags seeding done");
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const tagIds = tags.map((post) => post.id);
+
+  // prismaClient.post.create({ data: { tags: { connect: [{id: 'fef'}, {}] } } });
 }
