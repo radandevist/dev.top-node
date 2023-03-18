@@ -1,16 +1,12 @@
-import { objectFlip } from "../utils/objectUtils";
+import { Role } from "@prisma/client";
 
-export enum Role {
-  SIMPLE_USER = "simple-user",
-  MODERATOR = "moderator",
-  ADMIN = "admin"
-}
+import { objectFlip } from "../utils/objectUtils";
 
 export const roles = Object.values(Role);
 
 const rolesByPrecedence: Record<number, Role> = {
   0: Role.ADMIN,
-  1: Role.MODERATOR,
-  2: Role.SIMPLE_USER,
+  1: Role.AUTHOR,
+  2: Role.AUTHENTICATED,
 };
 export const rolesPrecedences = objectFlip(rolesByPrecedence) as Record<Role, `${number}`>;

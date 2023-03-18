@@ -3,6 +3,8 @@ import { Post } from "@prisma/client";
 
 // import { postsRepository, usersRepository } from "../../infra/dataSource";
 import { prisma } from "../../infra/prisma";
+import { DEFAULT_QUERY_LIMIT, DEFAULT_QUERY_PAGE } from "../../config/queries";
+import { getSkip } from "../../utils/queryUtils";
 
 // import { Post } from "./posts.entity";
 
@@ -23,11 +25,7 @@ export async function createPost(input: CreatePostInput) {
 type GetHomePostsInput = {
   page?: number;
   limit?: number;
-  // populate?: string[];
 };
-
-const DEFAULT_LIMIT = 5;
-const DEFAULT_PAGE = 1;
 
 // TODO: implement later
 // export async function findManyPosts({
@@ -60,11 +58,11 @@ const DEFAULT_PAGE = 1;
  * Something tha is not possible with TypeORM.
  */
 export async function getHomePostsList({
-  limit = DEFAULT_LIMIT,
-  page = DEFAULT_PAGE,
-  // populate = [],
+  limit = DEFAULT_QUERY_LIMIT,
+  page = DEFAULT_QUERY_PAGE,
 }: GetHomePostsInput) {
-  const skip = limit * (page - 1);
+  // const skip = limit * (page - 1);
+  const skip = getSkip(page, limit);
 
   // const qb = postsRepository.createQueryBuilder("post");
   // example value for populate: ["author", "comments", "comments.author"]
@@ -77,6 +75,7 @@ export async function getHomePostsList({
   //   .getMany();
 
   const homePosts = await prisma.post.findMany({
+    // TODO: filter where post !== deleted && post === published
     skip,
     take: limit,
     orderBy: {
@@ -84,8 +83,15 @@ export async function getHomePostsList({
     },
     include: {
       author: true,
-      reactions: true,
-      tags: true,
+      // reactions: true, // we only want the reactions count prefer '_count' instead
+      _count: {
+        select: {
+          comments: true,
+          reactions: true,
+        },
+      },
+      // eslint-disable-next-line max-len
+      tags: true, // there will be a limit of 4-5 tags for each posts so it's okay to load theme here
       // comments: {
       //   orderBy: {
       //     createdAt: "desc",
@@ -97,12 +103,13 @@ export async function getHomePostsList({
     },
   });
 
-  const count = await prisma.post.count();
+  // TODO: filter where post !== deleted && post === published
+  const postsCount = await prisma.post.count();
 
   return {
-    limit,
-    count,
-    page,
+    // page,
+    postsCount,
+    count: homePosts.length,
     posts: homePosts,
   };
 }

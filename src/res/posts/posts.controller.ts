@@ -23,10 +23,9 @@ export async function getHomePostsHandler(
   next: NextFunction,
 ) {
   try {
-    const posts = await getHomePostsList(req.query);
-    res.send(ok(posts));
+    const result = await getHomePostsList(req.query);
+    res.send(ok(result));
   } catch (error) {
-    // res.status(500).send(error);
     next(error);
   }
 }
