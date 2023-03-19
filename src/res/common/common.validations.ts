@@ -25,9 +25,9 @@ export const getManyItemsQuerySchema = z.object({
   // }).optional(),
 });
 
-export const getSearchItemsQuerySchema = getManyItemsQuerySchema
+export const searchItemsQuerySchema = getManyItemsQuerySchema
   .extend({
     term: z.string({ required_error: "A search term is required" })
       .trim()
-      .min(3, "A search term must be 3 characters minimum"),
+      .min(2, "A search term must be 2 characters minimum"),
   });
