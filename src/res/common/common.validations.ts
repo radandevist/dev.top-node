@@ -24,3 +24,10 @@ export const getManyItemsQuerySchema = z.object({
   //   invalid_type_error: "Populate query must be an array",
   // }).optional(),
 });
+
+export const getSearchItemsQuerySchema = getManyItemsQuerySchema
+  .extend({
+    term: z.string({ required_error: "A search term is required" })
+      .trim()
+      .min(3, "A search term must be 3 characters minimum"),
+  });

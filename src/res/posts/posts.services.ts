@@ -114,17 +114,17 @@ export async function getHomePostsList({
   };
 }
 
-type GetSearchPostsInput = {
+type SearchPostsInput = {
   page?: number;
   limit?: number;
   term: string;
 };
 
-export async function getSearchPostsList({
+export async function searchPosts({
   limit = DEFAULT_QUERY_LIMIT,
   page = DEFAULT_QUERY_PAGE,
   term,
-}: GetSearchPostsInput) {
+}: SearchPostsInput) {
   const skip = getSkip(page, limit);
 
   const WHERE_CONDITION = {
@@ -134,7 +134,7 @@ export async function getSearchPostsList({
     },
   };
 
-  const searchPosts = await prisma.post.findMany({
+  const foundPosts = await prisma.post.findMany({
     skip,
     take: limit,
     where: WHERE_CONDITION,
@@ -167,7 +167,7 @@ export async function getSearchPostsList({
 
   return {
     postsCount,
-    count: searchPosts.length,
-    posts: searchPosts,
+    count: foundPosts.length,
+    posts: foundPosts,
   };
 }

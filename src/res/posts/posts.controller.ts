@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 
 import { ok } from "../../helpers/responseFormatter";
 
-import { getHomePostsList, getSearchPostsList } from "./posts.services";
-import { GetHomePostsQuery, GetSearchPostsQuery } from "./posts.validations";
+import { getHomePostsList, searchPosts } from "./posts.services";
+import { GetHomePostsQuery, SearchPostsQuery } from "./posts.validations";
 
 // export async function getManyPostsHandler(req: Request, res: Response) {
 //   try {
@@ -32,12 +32,12 @@ export async function getHomePostsHandler(
 }
 
 export async function getSearchPostsHandler(
-  req: Request<EmptyObj, EmptyObj, EmptyObj, GetSearchPostsQuery>,
+  req: Request<EmptyObj, EmptyObj, EmptyObj, SearchPostsQuery>,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    const result = await getSearchPostsList(req.query);
+    const result = await searchPosts(req.query);
     res.send(ok(result));
   } catch (error) {
     next(error);
