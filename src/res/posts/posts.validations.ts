@@ -1,7 +1,7 @@
 import { TypeOf, z } from "zod";
 
 import { containSpaceRegex } from "../../constants/regex";
-import { getManyItemsQuerySchema, getSearchItemsQuerySchema } from "../common/common.validations";
+import { getManyItemsQuerySchema, searchItemsQuerySchema } from "../common/common.validations";
 
 export const createPostSchema = z.object({
   body: z.object({
@@ -34,7 +34,7 @@ export const getHomePostsSchema = z.object({
 });
 
 export const searchPostsSchema = z.object({
-  query: getSearchItemsQuerySchema,
+  query: searchItemsQuerySchema,
 });
 
 export type CreatePostBody = TypeOf<typeof createPostSchema>["body"];
