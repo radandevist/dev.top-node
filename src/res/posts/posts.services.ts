@@ -113,3 +113,61 @@ export async function getHomePostsList({
     posts: homePosts,
   };
 }
+
+type GetSearchPostsInput = {
+  page?: number;
+  limit?: number;
+  term: string;
+};
+
+export async function getSearchPostsList({
+  limit = DEFAULT_QUERY_LIMIT,
+  page = DEFAULT_QUERY_PAGE,
+  term,
+}: GetSearchPostsInput) {
+  const skip = getSkip(page, limit);
+
+  const WHERE_CONDITION = {
+    // TODO: filter where post !== deleted && post === published
+    title: {
+      contains: term,
+    },
+  };
+
+  const searchPosts = await prisma.post.findMany({
+    skip,
+    take: limit,
+    where: WHERE_CONDITION,
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      author: true,
+      // reactions: true, // we only want the reactions count prefer '_count' instead
+      _count: {
+        select: {
+          comments: true,
+          reactions: true,
+        },
+      },
+      // eslint-disable-next-line max-len
+      tags: true, // there will be a limit of 4-5 tags for each posts so it's okay to load theme here
+      // comments: {
+      //   orderBy: {
+      //     createdAt: "desc",
+      //   },
+      //   include: {
+      //     author: true,
+      //   },
+      // },
+    },
+  });
+
+  const postsCount = await prisma.post.count({ where: WHERE_CONDITION });
+
+  return {
+    postsCount,
+    count: searchPosts.length,
+    posts: searchPosts,
+  };
+}

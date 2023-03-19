@@ -33,6 +33,18 @@ export const getHomePostsSchema = z.object({
   query: getManyItemsQuerySchema,
 });
 
+export const getSearchPostsSchema = z.object({
+  query: getManyItemsQuerySchema
+    .extend({
+      term: z.string({ required_error: "A search term is required" })
+        .trim()
+        .min(3, "A search term must be 3 characters minimum"),
+    }),
+});
+
 export type CreatePostBody = TypeOf<typeof createPostSchema>["body"];
 
 export type GetHomePostsQuery = TypeOf<typeof getHomePostsSchema>["query"];
+
+// export type GetSearchPostsQuery = TypeOf<typeof getHomePostsSchema>["query"];
+export type GetSearchPostsQuery = z.infer<typeof getSearchPostsSchema>["query"];

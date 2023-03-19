@@ -6,7 +6,7 @@ import { GetManyTagsQuery } from "./tags.validations";
 import { findManyTags } from "./tags.services";
 
 export async function getManyTagsHandler(
-  req: Request<EmptyObj, EmptyObj, GetManyTagsQuery>,
+  req: Request<EmptyObj, EmptyObj, EmptyObj, GetManyTagsQuery>,
   res: Response,
   next: NextFunction,
 ) {

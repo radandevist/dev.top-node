@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 
 import { ok } from "../../helpers/responseFormatter";
 
-import { getHomePostsList } from "./posts.services";
-import { GetHomePostsQuery } from "./posts.validations";
+import { getHomePostsList, getSearchPostsList } from "./posts.services";
+import { GetHomePostsQuery, GetSearchPostsQuery } from "./posts.validations";
 
 // export async function getManyPostsHandler(req: Request, res: Response) {
 //   try {
@@ -18,12 +18,26 @@ import { GetHomePostsQuery } from "./posts.validations";
 // }
 
 export async function getHomePostsHandler(
-  req: Request<EmptyObj, EmptyObj, GetHomePostsQuery>,
+  req: Request<EmptyObj, EmptyObj, EmptyObj, GetHomePostsQuery>,
   res: Response,
   next: NextFunction,
 ) {
   try {
+    // const a = req.query.limit;
     const result = await getHomePostsList(req.query);
+    res.send(ok(result));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getSearchPostsHandler(
+  req: Request<EmptyObj, EmptyObj, EmptyObj, GetSearchPostsQuery>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await getSearchPostsList(req.query);
     res.send(ok(result));
   } catch (error) {
     next(error);

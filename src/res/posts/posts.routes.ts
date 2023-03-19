@@ -2,8 +2,8 @@ import { Router } from "express";
 
 import { validateResource } from "../../middlewares/validateResource";
 
-import { getHomePostsSchema } from "./posts.validations";
-import { getHomePostsHandler } from "./posts.controller";
+import { getHomePostsSchema, getSearchPostsSchema } from "./posts.validations";
+import { getHomePostsHandler, getSearchPostsHandler } from "./posts.controller";
 
 export const path = "/posts";
 export const router = Router();
@@ -13,3 +13,5 @@ export const router = Router();
 // router.get("/", validateResource(getManyPostsSchema), getManyPostsHandler);
 
 router.get("/home", validateResource(getHomePostsSchema), getHomePostsHandler);
+
+router.get<string, any, any, any, any>("/search", validateResource(getSearchPostsSchema), getSearchPostsHandler);
