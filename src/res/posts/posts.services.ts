@@ -91,7 +91,10 @@ export async function getHomePostsList({
         },
       },
       // eslint-disable-next-line max-len
-      tags: true, // there will be a limit of 4-5 tags for each posts so it's okay to load theme here
+      tags: {
+        // take: DEFAULT_QUERY_LIMIT,
+        take: 5,
+      }, // there will be a limit of 4-5 tags for each posts so it's okay to load theme here
       // comments: {
       //   orderBy: {
       //     createdAt: "desc",

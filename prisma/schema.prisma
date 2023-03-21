@@ -20,10 +20,18 @@ model User {
   role          Role       @default(AUTHENTICATED)
   verified      Boolean    @default(false)
   profilePicUrl String?
+  bio           String?
+  location      String?
+  education     String?
+  work          String?
+  availableFor  String?
   posts         Post[]
   comments      Comment[]
   sessions      Session[]
   reactions     Reaction[]
+  followedTags  Tag[]
+  followedUsers User[]     @relation("UserFollows")
+  followers     User[]     @relation("UserFollows")
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
@@ -100,6 +108,7 @@ model Tag {
   name      String   @unique
   color     String   @default("#000000")
   posts     Post[]
+  followers User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -27,6 +27,19 @@ export async function run(prismaClient: PrismaClient, {
 
   const userIds = users.map((user) => user.id);
 
+  // set the UserFollows relation
+  await Promise.all(userIds.map(async (userId) => {
+    const filteredIds = userIds.filter((id) => id !== userId);
+    await prismaClient.user.update({
+      where: { id: userId },
+      data: {
+        followers: {
+          connect: faker.helpers.arrayElements(filteredIds.map((id) => ({ id }))),
+        },
+      },
+    });
+  }));
+
   // =================== POSTS =======================//
   const madePosts = Array.from({ length: postsNum }).map(() => {
     const post = postFactory(faker) as Post & { tags: any };
@@ -50,7 +63,9 @@ export async function run(prismaClient: PrismaClient, {
 
   const postsIds = posts.map((post) => post.id);
 
-  // =================== REACTIONS =======================//
+  // ==================== COMMENTS (ON POSTS) =======================//
+
+  // =================== REACTIONS (TO POSTS) =======================//
   const madeReactions = Array.from({ length: reactionsNum }).map(() => {
     const reaction = reactionFactory(faker);
 
@@ -87,6 +102,9 @@ export async function run(prismaClient: PrismaClient, {
         ...tag,
         posts: {
           connect: faker.helpers.arrayElements(postsIds.map((id) => ({ id }))),
+        },
+        followers: {
+          connect: faker.helpers.arrayElements(userIds.map((id) => ({ id }))),
         },
       },
     });

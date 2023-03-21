@@ -65,3 +65,26 @@ export async function searchUsers({
     users: foundUsers,
   };
 }
+
+type GetUserProfileInput = {
+  userName: string;
+};
+
+export async function getUserProfile({
+  userName,
+}: GetUserProfileInput) {
+  const user = await prisma.user.findUnique({
+    where: { userName },
+    include: {
+      _count: {
+        select: {
+          posts: true,
+          comments: true,
+          followedTags: true,
+        },
+      },
+    },
+  });
+
+  return { user };
+}
