@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 
 import { ok } from "../../helpers/responseFormatter";
 
-import { getHomePostsList, searchPosts } from "./posts.services";
-import { GetHomePostsQuery, SearchPostsQuery } from "./posts.validations";
+import { findUserProfilePosts, getHomePostsList, searchPosts } from "./posts.services";
+import { GetHomePostsQuery, GetUserProfilePostsResource, SearchPostsQuery } from "./posts.validations";
 
 // export async function getManyPostsHandler(req: Request, res: Response) {
 //   try {
@@ -25,7 +25,7 @@ export async function getHomePostsHandler(
   try {
     // const a = req.query.limit;
     const result = await getHomePostsList(req.query);
-    res.send(ok(result));
+    res.status(200).send(ok(result));
   } catch (error) {
     next(error);
   }
@@ -38,7 +38,25 @@ export async function getSearchPostsHandler(
 ) {
   try {
     const result = await searchPosts(req.query);
-    res.send(ok(result));
+    res.status(200).send(ok(result));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getUserProfilePostsHandler(
+  req: Request<GetUserProfilePostsResource["params"], AnyObj, AnyObj, GetUserProfilePostsResource["query"]>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await findUserProfilePosts({
+      userName: req.params.userName,
+      limit: req.query.limit,
+      page: req.query.page,
+    });
+
+    res.status(200).send(ok(result));
   } catch (error) {
     next(error);
   }

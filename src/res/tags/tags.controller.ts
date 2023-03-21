@@ -12,7 +12,7 @@ export async function getManyTagsHandler(
 ) {
   try {
     const result = await findManyTags(req.query);
-    res.send(ok(result));
+    res.status(200).send(ok(result));
   } catch (error: any) {
     next(error);
   }
@@ -25,7 +25,7 @@ export async function searchTagsHandler(
 ) {
   try {
     const result = await searchTags(req.query);
-    res.send(ok(result));
+    res.status(200).send(ok(result));
   } catch (error: any) {
     next(error);
   }

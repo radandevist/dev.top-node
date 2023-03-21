@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { log } from "../../helpers/logger";
 import { ok } from "../../helpers/responseFormatter";
+import { AppError } from "../../classes/AppError";
 
 import { GetUserProfileParams, SearchUsersQuery } from "./users.validations";
 import { searchUsers, getUserProfile } from "./users.services";
@@ -18,7 +19,7 @@ export async function searchUsersHandler(
 ) {
   try {
     const result = await searchUsers(req.query);
-    res.send(ok(result));
+    res.status(200).send(ok(result));
   } catch (error) {
     next(error);
   }
@@ -31,7 +32,10 @@ export async function getUserProfileHandler(
 ) {
   try {
     const result = await getUserProfile(req.params);
-    res.send(ok(result));
+
+    if (!result.user) throw new AppError(404, "User not found");
+
+    res.status(200).send(ok(result));
   } catch (error) {
     next(error);
   }
