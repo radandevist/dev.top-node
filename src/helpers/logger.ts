@@ -1,6 +1,51 @@
 import { createLogger, format, transports } from "winston";
 import { consoleFormat } from "winston-console-format";
-import { StreamOptions } from "morgan";
+import "winston-daily-rotate-file"; // require in docs
+
+import { isProd } from "../config/environment";
+
+// for ensuring tha only errors (not above or below that level) are logged
+const errorFilter = format((info, _opts) => (info.level === "error" ? info : false));
+
+// for ensuring tha only http (not above or below that level) are logged
+const httpFilter = format((info, _opts) => (info.level === "http" ? info : false));
+
+const devTransports = [
+  new transports.Console({
+    format: format.combine(
+      format.colorize({ all: true }),
+      format.padLevels(),
+      consoleFormat({
+        showMeta: true,
+        metaStrip: ["timestamp", "service"],
+        inspectOptions: {
+          depth: Infinity,
+          colors: true,
+          maxArrayLength: Infinity,
+          breakLength: 120,
+          compact: Infinity,
+        },
+      }),
+    ),
+  }),
+];
+
+const prodTransports = [
+  new transports.DailyRotateFile({
+    level: "error",
+    filename: "logs/app-errors-%DATE%.log",
+    datePattern: "YYYY-MM-DD",
+    maxFiles: "14d",
+    format: format.combine(errorFilter()),
+  }),
+  new transports.DailyRotateFile({
+    level: "http",
+    filename: "logs/http-errors-%DATE%.log",
+    datePattern: "YYYY-MM-DD",
+    maxFiles: "14d",
+    format: format.combine(httpFilter()),
+  }),
+];
 
 /**
  * The logger instance to use throughout this entire project.
@@ -27,29 +72,5 @@ export const log = createLogger({
     format.json(),
   ),
   defaultMeta: { service: "Test" },
-  transports: [
-    new transports.Console({
-      format: format.combine(
-        format.colorize({ all: true }),
-        format.padLevels(),
-        consoleFormat({
-          showMeta: true,
-          metaStrip: ["timestamp", "service"],
-          inspectOptions: {
-            depth: Infinity,
-            colors: true,
-            maxArrayLength: Infinity,
-            breakLength: 120,
-            compact: Infinity,
-          },
-        }),
-      ),
-    }),
-  ],
+  transports: isProd ? prodTransports : devTransports,
 });
-
-export const stream: StreamOptions = {
-  write(message: string) {
-    log.silly(message);
-  },
-};

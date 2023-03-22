@@ -37,18 +37,9 @@ export const searchPostsSchema = z.object({
   query: searchItemsQuerySchema,
 });
 
-export const getUserProfilePostsSchema = z.object({
-  query: getManyItemsQuerySchema,
-  params: z.object({
-    userName: z.string({ required_error: "An userName parameter is required" }),
-  }),
-});
-
 export type CreatePostBody = TypeOf<typeof createPostSchema>["body"];
 
 export type GetHomePostsQuery = TypeOf<typeof getHomePostsSchema>["query"];
 
 // export type GetSearchPostsQuery = TypeOf<typeof getHomePostsSchema>["query"];
 export type SearchPostsQuery = z.infer<typeof searchPostsSchema>["query"];
-
-export type GetUserProfilePostsResource = z.infer<typeof getUserProfilePostsSchema>;

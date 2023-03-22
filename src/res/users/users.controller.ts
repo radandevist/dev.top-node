@@ -1,15 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 
-import { log } from "../../helpers/logger";
 import { ok } from "../../helpers/responseFormatter";
 import { AppError } from "../../classes/AppError";
 
-import { GetUserProfileParams, SearchUsersQuery } from "./users.validations";
-import { searchUsers, getUserProfile } from "./users.services";
+import { GetUserProfileParams, GetUserProfilePostsResource, SearchUsersQuery } from "./users.validations";
+import {
+  searchUsers, getUserProfile, findUserProfilePosts, findUserByUserName,
+} from "./users.services";
 
-export function getUserHandler(req: Request, res: Response) {
-  log.info("request body", req.body);
-  res.status(200).send(ok(req.body));
+export function getUsersHandler(_req: Request, _res: Response, next: NextFunction) {
+  try {
+    // log.info("request body", req.body);
+    // res.status(200).send(ok(req.body));
+    throw new AppError(500, "intentional throw");
+  } catch (error) {
+    next(error);
+  }
 }
 
 export async function searchUsersHandler(
@@ -34,6 +40,27 @@ export async function getUserProfileHandler(
     const result = await getUserProfile(req.params);
 
     if (!result.user) throw new AppError(404, "User not found");
+
+    res.status(200).send(ok(result));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getUserProfilePostsHandler(
+  req: Request<GetUserProfilePostsResource["params"], AnyObj, AnyObj, GetUserProfilePostsResource["query"]>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const user = await findUserByUserName(req.params.userName);
+    if (!user) throw new AppError(404, "User not found");
+
+    const result = await findUserProfilePosts({
+      userName: req.params.userName,
+      limit: req.query.limit,
+      page: req.query.page,
+    });
 
     res.status(200).send(ok(result));
   } catch (error) {
