@@ -17,9 +17,7 @@ export type RefreshTokenPayload = {
 
 type CreateSessionInput = Pick<Session, "IPAddress" | "userAgent" | "userId">;
 
-function createToken(userId: string) {
-  const sessionId = cuid();
-
+function createToken(userId: string, sessionId: string) {
   const { secret, lifeTime } = jwtConfig.refreshToken;
   const payload: RefreshTokenPayload = { userId, sessionId };
 
@@ -28,10 +26,9 @@ function createToken(userId: string) {
 }
 
 export async function createSession(input: CreateSessionInput) {
-  // const session = sessionsRepository.create(input);
-  // return sessionsRepository.save(session);
-  const token = createToken(input.userId);
-  return prisma.session.create({ data: { ...input, token } });
+  const id = cuid();
+  const token = createToken(input.userId, id);
+  return prisma.session.create({ data: { id, token, ...input } });
 }
 
 type VerifySessionResult =

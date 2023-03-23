@@ -19,7 +19,7 @@ export async function registerHandler(
   next: NextFunction,
 ) {
   try {
-    const { firstName, ...restOfReqBody } = req.body;
+    const { firstName, confirmPassword: _, ...restOfReqBody } = req.body;
     const { message, user } = await registerUser({
       ...restOfReqBody,
       ...(firstName ? { firstName } : { firstName: null }),
@@ -106,7 +106,7 @@ export async function logoutHandler(
     await deleteSessionById(decoded.sessionId);
     clearRefreshCookie(res);
 
-    res.status(200).send(ok({ user: session.user }));
+    res.status(201).send(ok({ user: session.user }));
   } catch (error: any) {
     next(error);
   }
